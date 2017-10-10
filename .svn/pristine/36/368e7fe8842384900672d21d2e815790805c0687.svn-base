@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.DailyMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.Daily" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="scope" property="scope" jdbcType="INTEGER" />
+    <result column="images" property="images" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="publish_time" property="publishTime" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="DraftsLogResultMap" type="cn.mycloudedu.user.dto.DraftsLogDTO">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="MyLogResultMap" type="cn.mycloudedu.user.dto.MyLogDTO">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="images" property="images" jdbcType="VARCHAR" />
+    <result column="publish_time" property="publishTime" jdbcType="BIGINT" />
+    <result column="comments" property="comments" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, project_id, title, content, scope, images, status, create_time, update_time, 
+    publish_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from daily
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from daily
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.Daily" >
+    insert into daily (id, user_id, project_id, 
+      title, content, scope, 
+      images, status, create_time, 
+      update_time, publish_time)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{projectId,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{scope,jdbcType=INTEGER}, 
+      #{images,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=BIGINT}, #{publishTime,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.Daily" >
+    insert into daily
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="projectId != null" >
+        project_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="scope != null" >
+        scope,
+      </if>
+      <if test="images != null" >
+        images,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != 0" >
+        create_time,
+      </if>
+      <if test="updateTime != 0" >
+        update_time,
+      </if>
+      <if test="publishTime != 0" >
+        publish_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="scope != null" >
+        #{scope,jdbcType=INTEGER},
+      </if>
+      <if test="images != null" >
+        #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="publishTime != 0" >
+        #{publishTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.Daily" >
+    update daily
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="scope != null" >
+        scope = #{scope,jdbcType=INTEGER},
+      </if>
+      <if test="images != null" >
+        images = #{images,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="publishTime != 0" >
+        publish_time = #{publishTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.Daily" >
+    update daily
+    set user_id = #{userId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      scope = #{scope,jdbcType=INTEGER},
+      images = #{images,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      publish_time = #{publishTime,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getDraftsLogList" resultMap="DraftsLogResultMap">
+    SELECT id,title,update_time
+    FROM daily
+    WHERE user_id = #{userId,jdbcType=INTEGER} AND status = 0
+  </select>
+  <select id="getMyLogList" resultMap="MyLogResultMap">
+    SELECT d.id,d.publish_time,d.title,d.content,d.images,count(c.daily_id) AS comments
+    FROM daily d
+    LEFT JOIN comment c ON d.id=c.daily_id
+    WHERE d.user_id = #{userId,jdbcType=INTEGER} AND d.status = 1
+    GROUP BY d.id
+  </select>
+  <select id="getLogDetails" resultMap="MyLogResultMap">
+    SELECT d.id,d.publish_time,d.title,d.content,d.images,count(c.daily_id) AS comments
+    FROM daily d
+    LEFT JOIN comment c ON d.id=c.daily_id
+    WHERE d.user_id = #{userId,jdbcType=INTEGER} AND d.id=#{dailyId,jdbcType=INTEGER} AND d.status = 1
+    GROUP BY d.id
+  </select>
+</mapper>

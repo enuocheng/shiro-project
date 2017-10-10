@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.UserCustomMapper">
+    <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.UserBase">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="username" property="username" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="avatar" property="avatar" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="UserAuthResult" type="cn.mycloudedu.user.domain.UserAuth" extends="BaseResultMap">
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="UserInfoResult" type="cn.mycloudedu.user.dto.UserInfo" extends="BaseResultMap">
+        <result column="birthday" property="birthday" jdbcType="BIGINT"/>
+        <result column="province" property="province" jdbcType="INTEGER"/>
+        <result column="city" property="city" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, username, nickname, password, email, mobile, avatar
+  </sql>
+    <sql id="UserInfo_Column_List">
+    id, username, nickname, password, email, mobile, avatar,birthday,province,city
+  </sql>
+    <select id="getUserByUsername" resultMap="UserAuthResult">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE username=#{username,jdbcType=VARCHAR}
+    </select>
+    <select id="getUserByEmail" resultMap="UserAuthResult">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE email=#{email,jdbcType=VARCHAR}
+    </select>
+    <select id="getUserByMobile" resultMap="UserAuthResult">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE mobile=#{mobile,jdbcType=VARCHAR}
+    </select>
+    <select id="getUserById" resultMap="UserAuthResult">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE id=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getUserByMobileExceptSelf" resultMap="UserAuthResult">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM user
+        WHERE mobile=#{mobile,jdbcType=VARCHAR} AND id!=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getUserInfo" resultMap="UserInfoResult">
+        SELECT <include refid="UserInfo_Column_List"/>
+        FROM user
+        WHERE id=#{userId,jdbcType=INTEGER}
+    </select>
+</mapper>

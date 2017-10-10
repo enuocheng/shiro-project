@@ -1,0 +1,313 @@
+package cn.mycloudedu.user.biz
+
+import java.util.{ArrayList => JavaArrayList, List => JavaList, Map => JavaMap}
+
+import cn.mycloudedu.framework.core.exception.BusinessException
+import cn.mycloudedu.framework.core.utils.{DateUtil, RegexUtil, StringUtil}
+import cn.mycloudedu.user.Constant.ResumeConstant
+import cn.mycloudedu.user.dao._
+import cn.mycloudedu.user.domain.{Resume, ResumeArea, ResumeExperience, ResumePositionType}
+import cn.mycloudedu.user.dto.{ResumeBaseDTO, ResumeExperienceDTO}
+import cn.mycloudedu.user.exception.{ResumeErrorCode, UserErrorCode}
+import cn.mycloudedu.user.param.{JobIntentionParam, ResumeBaseInfoParam, ResumeExperienceParam}
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+import scala.collection.JavaConversions._
+
+/**
+  * Created by e诺
+  * on 2017/5/4
+  * Time 上午8:48
+  */
+@Service
+class ResumeBiz {
+  @Autowired private val resumeMapper: ResumeMapper = null
+  @Autowired private val positionTypeMapper: PositionTypeMapper = null
+  @Autowired private val resumePositionTypeMapper: ResumePositionTypeMapper = null
+  @Autowired private val resumeAreaMapper: ResumeAreaMapper = null
+  @Autowired private val resumeExperienceMapper: ResumeExperienceMapper = null
+
+  def getResumeBase(userId: Int): Option[ResumeBaseDTO] = {
+    resumeMapper.getResumeBase(userId) match {
+      case resumeBase: ResumeBaseDTO => Some(resumeBase)
+      case _ => None
+    }
+  }
+
+  def getAvatar(userId: Int): String = {
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) => resumeBase.getAvatar
+      case None => ""
+    }
+  }
+
+  def setAvatar(userId: Int, avatar: String): Unit = {
+    val resume = new Resume
+    resume.setAvatar(avatar)
+    resume.setUpdateTime(DateUtil.getTimeStamp)
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) =>
+        if (resumeBase.getName != null && !"".equals(resumeBase.getName) &&
+          (resumeBase.getAvatar == null || "".equals(resumeBase.getAvatar)))
+          resume.setBasePercent(resumeBase.getBasePercent + ResumeConstant.AVATAR_PERCENT)
+        resume.setId(resumeBase.getId)
+        resumeMapper.updateByPrimaryKeySelective(resume)
+      case None =>
+        resume.setCreateTime(DateUtil.getTimeStamp)
+        resume.setUserId(userId)
+        resume.setBasePercent(ResumeConstant.AVATAR_PERCENT)
+        resumeMapper.insertSelective(resume)
+    }
+  }
+
+  def createResumeBaseInfo(resume: Resume, param: ResumeBaseInfoParam): Unit = {
+    resume.setName(param.getName)
+    resume.setSex(param.getSex)
+    resume.setEducation(param.getEducation)
+    resume.setBirthday(param.getBirthday)
+    if (!RegexUtil.isMobile(param.getMobile))
+      throw new BusinessException(UserErrorCode(UserErrorCode.MOBILE_REGEX_ERROR))
+    resume.setMobile(param.getMobile)
+    if (!RegexUtil.isEmail(param.getEmail))
+      throw new BusinessException(UserErrorCode(UserErrorCode.EMAIL_REGEX_ERROR))
+    resume.setEmail(param.getEmail)
+    resume.setProvinceId(param.getProvinceId)
+    resume.setProvinceName(param.getProvinceName)
+    resume.setCityId(param.getCityId)
+    resume.setCityName(param.getCityName)
+  }
+
+  def setResumeBaseInfo(userId: Int, param: ResumeBaseInfoParam): Unit = {
+    val resume = new Resume
+    resume.setUpdateTime(DateUtil.getTimeStamp)
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) =>
+        if (resumeBase.getAvatar != null && !"".equals(resumeBase.getAvatar)
+          && (resumeBase.getName == null || "".equals(resumeBase.getName))) {
+          resume.setBasePercent(ResumeConstant.AVATAR_PERCENT + ResumeConstant.NAME_PERCENT + ResumeConstant.SEX_PERCENT + ResumeConstant.EDUCATION_PERCENT
+            + ResumeConstant.BIRTHDAY_PERCENT + ResumeConstant.MOBILE_PERCENT + ResumeConstant.EMAIL_PERCENT + ResumeConstant.ADDRESS_PERCENT)
+        }
+        this.createResumeBaseInfo(resume, param)
+        resume.setId(resumeBase.getId)
+        resumeMapper.updateByPrimaryKeySelective(resume)
+      case None =>
+        this.createResumeBaseInfo(resume, param)
+        resume.setBasePercent(ResumeConstant.NAME_PERCENT + ResumeConstant.SEX_PERCENT + ResumeConstant.EDUCATION_PERCENT
+          + ResumeConstant.BIRTHDAY_PERCENT + ResumeConstant.MOBILE_PERCENT + ResumeConstant.EMAIL_PERCENT + ResumeConstant.ADDRESS_PERCENT)
+        resume.setCreateTime(DateUtil.getTimeStamp)
+        resume.setUserId(userId)
+        resumeMapper.insertSelective(resume)
+    }
+  }
+
+  def getResumeBaseInfo(userId: Int): ResumeBaseDTO = {
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) => resumeBase
+      case None => new ResumeBaseDTO
+    }
+  }
+
+  def setPersonalAdvantage(userId: Int, advantage: String): Unit = {
+    if (advantage != null && !"".equals(advantage)) {
+      val len = StringUtil.stringLength(advantage)
+      if (len < 8 || len > 120)
+        throw new BusinessException(ResumeErrorCode(ResumeErrorCode.CHAR_LENGTH_ERROR))
+    }
+    val resume = new Resume
+    resume.setAdvantage(advantage)
+    resume.setUpdateTime(DateUtil.getTimeStamp)
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) =>
+        if (resumeBase.getAdvantage == null || "".equals(resumeBase.getAdvantage))
+          resume.setAdvantagePercent(ResumeConstant.ADVANTAGE_PERCENT)
+        resume.setId(resumeBase.getId)
+        resumeMapper.updateByPrimaryKeySelective(resume)
+      case None =>
+        resume.setAdvantagePercent(ResumeConstant.ADVANTAGE_PERCENT)
+        resume.setCreateTime(DateUtil.getTimeStamp)
+        resume.setUserId(userId)
+        resumeMapper.insertSelective(resume)
+    }
+  }
+
+  def getPersonalAdvantage(userId: Int): String = {
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) => resumeBase.getAdvantage
+      case None => null
+    }
+  }
+
+  def getPositionType(parentId: Int): JavaList[JavaMap[String, Any]] = {
+    positionTypeMapper.getPositionType(parentId)
+  }
+
+  def getResumeArea(userId: Int): JavaList[JavaMap[String, Any]] = {
+    resumeAreaMapper.getResumeArea(userId)
+  }
+
+  def getResumePositionType(userId: Int): JavaList[JavaMap[String, Any]] = {
+    positionTypeMapper.getResumePositionType(userId)
+  }
+
+  def getJobIntention(userId: Int): JavaMap[String, Any] = {
+    resumeMapper.getJobIntention(userId)
+  }
+
+  def setJobIntention(userId: Int, param: JobIntentionParam): Unit = {
+    if (param.getExpectPosition.size() > 3)
+      throw new BusinessException(ResumeErrorCode(ResumeErrorCode.EXCEPT_POSITION_ERROR))
+    if (param.getExpectAddress.size() > 3)
+      throw new BusinessException(ResumeErrorCode(ResumeErrorCode.EXCEPT_ADDRESS_ERROR))
+    val resume = new Resume
+    resume.setUpdateTime(DateUtil.getTimeStamp)
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) =>
+        resume.setTime(param.getArrivalTime)
+        resume.setMinSalary(param.getMinSalary)
+        resume.setMaxSalary(param.getMaxSalary)
+        resume.setProperty(param.getPositionType)
+        if (resumeBase.getExpectPercent == 0) {
+          resume.setExpectPercent(ResumeConstant.POSITION_TYPE_PERCENT + ResumeConstant.PROPERTY_PERCENT
+            + ResumeConstant.EXPECT_ADDRESS_PERCENT + ResumeConstant.SALARY_PERCENT + ResumeConstant.TIME_PERCENT)
+        }
+        this.deleteResumePositionType(userId)
+        this.deleteResumeArea(userId)
+        resume.setId(resumeBase.getId)
+        resumeMapper.updateByPrimaryKeySelective(resume)
+        this.insertResumePositionType(userId, resumeBase.getId, param.getExpectPosition)
+        this.insertResumeArea(userId, resumeBase.getId, param.getExpectAddress)
+      case None =>
+        resume.setCreateTime(DateUtil.getTimeStamp)
+        resume.setTime(param.getArrivalTime)
+        resume.setMinSalary(param.getMinSalary)
+        resume.setMaxSalary(param.getMaxSalary)
+        resume.setProperty(param.getPositionType)
+        resume.setExpectPercent(ResumeConstant.POSITION_TYPE_PERCENT + ResumeConstant.PROPERTY_PERCENT
+          + ResumeConstant.EXPECT_ADDRESS_PERCENT + ResumeConstant.SALARY_PERCENT + ResumeConstant.TIME_PERCENT)
+        resume.setUserId(userId)
+        resumeMapper.insertSelective(resume)
+        this.insertResumePositionType(userId, resume.getId, param.getExpectPosition)
+        this.insertResumeArea(userId, resume.getId, param.getExpectAddress)
+    }
+  }
+
+  def insertResumePositionType(userId: Int, resumeId: Int, positionTypeId: JavaList[Integer]): Unit = {
+
+    val resumePositionTypeList: JavaList[ResumePositionType] = new JavaArrayList[ResumePositionType]()
+
+    for (id: Integer <- positionTypeId) {
+      var resumePositionType = new ResumePositionType
+      resumePositionType.setCreateTime(DateUtil.getTimeStamp)
+      resumePositionType.setResumeId(resumeId)
+      resumePositionType.setUserId(userId)
+      resumePositionType.setPositionTypeId(id)
+      resumePositionTypeList.add(resumePositionType)
+      resumePositionType = null
+    }
+    resumePositionTypeMapper.batchInsertResumePositionType(resumePositionTypeList)
+  }
+
+  def deleteResumePositionType(userId: Int): Boolean = {
+    if (resumePositionTypeMapper.deleteResumePositionType(userId) > 0) true
+    else false
+  }
+
+  def insertResumeArea(userId: Int, resumeId: Int, areaId: JavaList[Integer]): Unit = {
+    val list: JavaList[ResumeArea] = new JavaArrayList[ResumeArea]()
+    for (id: Integer <- areaId) {
+      var resumeArea = new ResumeArea
+      resumeArea.setCreateTime(DateUtil.getTimeStamp)
+      resumeArea.setResumeId(resumeId)
+      resumeArea.setUserId(userId)
+      resumeArea.setAreaId(id)
+      list.add(resumeArea)
+      resumeArea = null
+    }
+    resumeAreaMapper.batchInsertResumeArea(list)
+  }
+
+  def deleteResumeArea(userId: Int): Boolean = {
+    if (resumeAreaMapper.deleteResumeArea(userId) > 0) true
+    else false
+  }
+
+  def getResumeExperienceList(userId: Int, status: Int): JavaList[ResumeExperienceDTO] = {
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) => resumeExperienceMapper.getResumeExperienceList(userId, resumeBase.getId, status)
+      case None => new JavaArrayList[ResumeExperienceDTO]()
+    }
+  }
+
+  def getResumeExperience(experienceId: Int): ResumeExperienceDTO = {
+    resumeExperienceMapper.getResumeExperience(experienceId)
+  }
+
+  def setResumeExperience(userId: Int, param: ResumeExperienceParam, status: Int): Unit = {
+    var resume = new Resume
+    var resumeExperience = new ResumeExperience
+    resume.setUpdateTime(DateUtil.getTimeStamp)
+    resumeExperience.setUserId(userId)
+    resumeExperience.setStatus(status)
+    this.getResumeBase(userId) match {
+      case Some(resumeBase) => this.createResumeExperience(resumeExperience, param)
+        resumeExperience.setResumeId(resumeBase.getId)
+        resumeExperienceMapper.insertSelective(resumeExperience)
+        if (resumeBase.getInternshipPercent == 0 && status == ResumeConstant.RESUME_PRACTICE_EXPERIENCE) {
+          resume.setInternshipPercent(ResumeConstant.PRACTICE_DESCRIPTION + ResumeConstant.PRACTICE_NAME
+            + ResumeConstant.PRACTICE_POSITION + ResumeConstant.PRACTICE_TIME)
+          resume.setId(resumeBase.getId)
+          resumeMapper.updateByPrimaryKeySelective(resume)
+        }
+        else if (resumeBase.getProjectPercent == 0 && status == ResumeConstant.RESUME_PROJECT_EXPERIENCE) {
+          resume.setProjectPercent(ResumeConstant.PROJECT_DESCRIPTION + ResumeConstant.PROJECT_NAME
+            + ResumeConstant.PROJECT_POSITION + ResumeConstant.PROJECT_TIME)
+          resume.setId(resumeBase.getId)
+          resumeMapper.updateByPrimaryKeySelective(resume)
+        }
+      case None => resume.setCreateTime(DateUtil.getTimeStamp)
+        resume.setUserId(userId)
+        if (status == ResumeConstant.RESUME_PRACTICE_EXPERIENCE)
+          resume.setInternshipPercent(ResumeConstant.PRACTICE_DESCRIPTION + ResumeConstant.PRACTICE_NAME
+            + ResumeConstant.PRACTICE_POSITION + ResumeConstant.PRACTICE_TIME)
+        else if (status == ResumeConstant.RESUME_PROJECT_EXPERIENCE)
+          resume.setProjectPercent(ResumeConstant.PROJECT_DESCRIPTION + ResumeConstant.PROJECT_NAME
+            + ResumeConstant.PROJECT_POSITION + ResumeConstant.PROJECT_TIME)
+        resumeMapper.insertSelective(resume)
+        resumeExperience.setResumeId(resume.getId)
+        this.createResumeExperience(resumeExperience, param)
+        resumeExperienceMapper.insertSelective(resumeExperience)
+    }
+    resume = null
+    resumeExperience = null
+  }
+
+  def createResumeExperience(resumeExperience: ResumeExperience, param: ResumeExperienceParam): Unit = {
+    resumeExperience.setDescription(param.getDescription)
+    resumeExperience.setEndTime(param.getEndTime)
+    resumeExperience.setName(param.getName)
+    resumeExperience.setPosition(param.getPosition)
+    resumeExperience.setStartTime(param.getStartTime)
+  }
+
+  def updateResumeExperience(experienceId: Int, param: ResumeExperienceParam): Unit = {
+    val resumeExperience = new ResumeExperience
+    this.createResumeExperience(resumeExperience, param)
+    resumeExperience.setId(experienceId)
+    resumeExperienceMapper.updateByPrimaryKeySelective(resumeExperience)
+  }
+
+  def deleteResumeExperience(userId: Int, experienceId: Int, status: Int): Unit = {
+    val experienceList = this.getResumeExperienceList(userId, status)
+    if (experienceList.size() == 1) {
+      val resume = new Resume
+      resume.setUserId(userId)
+      status match {
+        case ResumeConstant.RESUME_PRACTICE_EXPERIENCE =>resume.setInternshipPercent(0)
+        case ResumeConstant.RESUME_PROJECT_EXPERIENCE =>resume.setProjectPercent(0)
+      }
+      resumeMapper.updateByUserIdSelective(resume)
+    }
+    resumeExperienceMapper.deleteByPrimaryKey(experienceId)
+  }
+}

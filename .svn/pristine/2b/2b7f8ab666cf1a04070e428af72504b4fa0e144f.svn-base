@@ -1,0 +1,74 @@
+package service
+
+import cn.mycloudedu.framework.core.utils.JsonBinder
+import cn.mycloudedu.user.param.JobIntentionParam
+import cn.mycloudedu.user.service.ResumeService
+import org.apache.log4j.Logger
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+import java.util.{ArrayList=>JavaArrayList}
+
+/**
+  * Created by e诺
+  * on 2017/4/20
+  * Time 下午2:45
+  */
+@RunWith(classOf[SpringJUnit4ClassRunner])
+@ContextConfiguration(Array("/spring-context.xml"))
+class ResumeServiceTest {
+  private val log = Logger.getLogger(this.getClass)
+  @Autowired val resumeService: ResumeService = null
+
+  @Test def getAvatarTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getAvatar(2)))
+  }
+
+  @Test def getResumeBaseInfoTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeBaseInfo(11)))
+  }
+
+  @Test def setPersonalAdvantageTest: Unit = {
+    resumeService.setPersonalAdvantage(11, "天生丽质，温柔娴淑，知书达理，温文尔雅")
+  }
+
+  @Test def getPersonalAdvantageTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getPersonalAdvantage(11)))
+  }
+
+  @Test def getPositionTypeTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getPositionType(0)))
+  }
+
+  @Test def getResumePositionTypeTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumePositionType(11)))
+  }
+
+  @Test def getResumeAreaTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeArea(11)))
+  }
+
+  @Test def getJobIntentionTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getJobIntention(11)))
+  }
+  @Test def setJobIntentionTest: Unit = {
+    val param=new JobIntentionParam
+    param.setArrivalTime(2)
+   val addressIds=new JavaArrayList[Integer]()
+    addressIds.add(275)
+    addressIds.add(276)
+    addressIds.add(277)
+    param.setExpectAddress(addressIds)
+    param.setMax_salary(40)
+    param.setMin_salary(30)
+    param.setPositionType(2)
+    val positionTypeIds=new JavaArrayList[Integer]()
+    positionTypeIds.add(402)
+    positionTypeIds.add(403)
+    positionTypeIds.add(404)
+    param.setExpectPosition(positionTypeIds)
+    resumeService.setJobIntention(11,param)
+  }
+}

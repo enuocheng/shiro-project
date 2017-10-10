@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.CommentMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.Comment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="daily_id" property="dailyId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="to_teacher_id" property="toTeacherId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+  </resultMap>
+  <resultMap id="CommentResultMap" type="cn.mycloudedu.user.dto.CommentDTO">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="username" property="username" jdbcType="VARCHAR" />
+    <result column="to_user_id" property="toUserId" jdbcType="INTEGER" />
+    <result column="to_username" property="toUsername" jdbcType="VARCHAR" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
+    <result column="to_teacher_id" property="toTeacherId" jdbcType="INTEGER" />
+    <result column="to_teacher_name" property="toTeacherName" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="user_avatar" property="userAvatar" jdbcType="VARCHAR" />
+    <result column="teacher_avatar" property="teacherAvatar" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <collection property="subComment" ofType="cn.mycloudedu.user.dto.CommentDTO">
+      <id column="sub_id" property="id" jdbcType="INTEGER" />
+      <result column="sub_user_id" property="userId" jdbcType="INTEGER" />
+      <result column="sub_username" property="username" jdbcType="VARCHAR" />
+      <result column="sub_to_user_id" property="toUserId" jdbcType="INTEGER" />
+      <result column="sub_to_username" property="toUsername" jdbcType="VARCHAR" />
+      <result column="sub_teacher_id" property="teacherId" jdbcType="INTEGER" />
+      <result column="sub_teacher_name" property="teacherName" jdbcType="VARCHAR" />
+      <result column="sub_to_teacher_id" property="toTeacherId" jdbcType="INTEGER" />
+      <result column="sub_to_teacher_name" property="toTeacherName" jdbcType="VARCHAR" />
+      <result column="sub_title" property="title" jdbcType="VARCHAR" />
+      <result column="sub_content" property="content" jdbcType="VARCHAR" />
+      <result column="sub_create_time" property="createTime" jdbcType="BIGINT" />
+    </collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, daily_id, user_id, to_user_id, teacher_id, to_teacher_id, title, content, level, 
+    parent_id, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from comment
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from comment
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.Comment" >
+    insert into comment (id, daily_id, user_id, 
+      to_user_id, teacher_id, to_teacher_id, 
+      title, content, level, 
+      parent_id, create_time, update_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{dailyId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{toUserId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, #{toTeacherId,jdbcType=INTEGER}, 
+      #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{level,jdbcType=INTEGER}, 
+      #{parentId,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.Comment" >
+    insert into comment
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dailyId != null" >
+        daily_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="toUserId != null" >
+        to_user_id,
+      </if>
+      <if test="teacherId != null" >
+        teacher_id,
+      </if>
+      <if test="toTeacherId != null" >
+        to_teacher_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="createTime != 0" >
+        create_time,
+      </if>
+      <if test="updateTime != 0" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="dailyId != null" >
+        #{dailyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="toUserId != null" >
+        #{toUserId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="toTeacherId != null" >
+        #{toTeacherId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.Comment" >
+    update comment
+    <set >
+      <if test="dailyId != null" >
+        daily_id = #{dailyId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="toUserId != null" >
+        to_user_id = #{toUserId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="toTeacherId != null" >
+        to_teacher_id = #{toTeacherId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.Comment" >
+    update comment
+    set daily_id = #{dailyId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      to_user_id = #{toUserId,jdbcType=INTEGER},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      to_teacher_id = #{toTeacherId,jdbcType=INTEGER},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      level = #{level,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getLogComment" resultMap="CommentResultMap">
+    SELECT c1.content,c1.create_time,c1.id,c1.teacher_id,c1.title,c1.to_teacher_id,c1.to_user_id, c1.user_id ,u1.avatar as user_avatar,
+    u1.nickname AS username,tou1.nickname as to_username,t1.name as teacher_name,tot1.name as to_teacher_name,t1.avatar as teacher_avatar,
+    c2.content AS sub_content ,c2.create_time AS sub_create_time ,c2.id AS sub_id ,c2.teacher_id AS sub_teacher_id,
+    c2.title AS sub_title ,c2.to_teacher_id AS sub_to_teacher_id,c2.to_user_id AS sub_to_user_id,c2.user_id AS sub_user_id,
+    u2.nickname AS sub_username,tou2.nickname as sub_to_username,t2.name as sub_teacher_name,tot2.name as sub_to_teacher_name
+    FROM comment c1
+    LEFT JOIN comment c2 ON c1.id=c2.parent_id
+    LEFT JOIN user u1 ON c1.user_id=u1.id
+    LEFT JOIN user tou1 ON c1.to_user_id=tou1.id
+    LEFT JOIN user u2 ON c2.user_id=u2.id
+    LEFT JOIN user tou2 ON c2.to_user_id=tou2.id
+    LEFT JOIN teacher t1 ON c1.teacher_id=t1.id
+    LEFT JOIN teacher tot1 ON c1.to_teacher_id=tot1.id
+    LEFT JOIN teacher t2 ON c2.teacher_id=t2.id
+    LEFT JOIN teacher tot2 ON c2.to_teacher_id=tot2.id
+    WHERE c1.daily_id=#{dailyId,jdbcType=INTEGER} AND c1.level=1
+  </select>
+  <delete id="deleteComment">
+    DELETE c2,c1
+    FROM `comment` c1
+    LEFT JOIN `comment` c2 ON c1.id=c2.parent_id
+    WHERE c1.id=#{commentId,jdbcType=INTEGER}
+  </delete>
+</mapper>

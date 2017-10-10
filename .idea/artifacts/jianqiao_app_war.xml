@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="jianqiao-app:war">
+    <output-path>$PROJECT_DIR$/jianqiao-app/target</output-path>
+    <root id="archive" name="jianqiao-app.war">
+      <element id="artifact" artifact-name="jianqiao-app:war exploded" />
+    </root>
+  </artifact>
+</component>

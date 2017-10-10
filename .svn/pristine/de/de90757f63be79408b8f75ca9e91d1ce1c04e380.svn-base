@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.NoticeMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.Notice" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="project_id" property="projectId" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="NoticeResultMap" type="cn.mycloudedu.user.dto.NoticeDTO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="NoticeDetailsResultMap" type="cn.mycloudedu.user.dto.NoticeDetailsDTO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="teacher_name" property="teacherName" jdbcType="VARCHAR" />
+    <result column="class_name" property="className" jdbcType="VARCHAR" />
+    <result column="project_name" property="projectName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, content, teacher_id, create_time, class_id, project_id
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from notice
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from notice
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.Notice" >
+    insert into notice (id, title, content, 
+      teacher_id, create_time, class_id, 
+      project_id)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
+      #{teacherId,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, #{classId,jdbcType=INTEGER}, 
+      #{projectId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.Notice" >
+    insert into notice
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="teacherId != null" >
+        teacher_id,
+      </if>
+      <if test="createTime != 0" >
+        create_time,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+      <if test="projectId != null" >
+        project_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherId != null" >
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        #{projectId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.Notice" >
+    update notice
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="teacherId != null" >
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="projectId != null" >
+        project_id = #{projectId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.Notice" >
+    update notice
+    set title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      class_id = #{classId,jdbcType=INTEGER},
+      project_id = #{projectId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getNoticeList" resultMap="NoticeResultMap">
+    SELECT DISTINCT n.id,n.title,n.create_time,t.avatar,t.name
+    FROM notice n
+    LEFT JOIN student_info si ON n.teacher_id=si.teacher_id
+    JOIN project_student ps ON (ps.project_id=n.project_id OR n.class_id=ps.class_id)
+      JOIN teacher t ON t.id=n.teacher_id
+    WHERE  si.user_id=#{userId,jdbcType=INTEGER}
+  </select>
+  <select id="getNoticeDetails" resultMap="NoticeDetailsResultMap">
+    SELECT n.id,n.title,n.content,n.create_time,t.avatar t.name AS teacher_name,c.name AS class_name,p.name AS project_name
+    FROM notice n
+    JOIN teacher t ON n.teacher_id=t.id
+    LEFT JOIN class c ON c.id=n.class_id
+    LEFT JOIN project p ON p.id=n.project_id
+    WHERE n.id=#{noticeId,jdbcType=INTEGER}
+  </select>
+</mapper>

@@ -1,0 +1,142 @@
+package service
+
+import java.util.{ArrayList => JavaArrayList}
+
+import cn.mycloudedu.framework.core.utils.{DateUtil, JsonBinder}
+import cn.mycloudedu.user.param.{JobIntentionParam, ResumeEducationParam, ResumeExperienceParam}
+import cn.mycloudedu.user.service.ResumeService
+import org.apache.log4j.Logger
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+
+/**
+  * Created by e诺
+  * on 2017/4/20
+  * Time 下午2:45
+  */
+@RunWith(classOf[SpringJUnit4ClassRunner])
+@ContextConfiguration(Array("/spring-context.xml"))
+class ResumeServiceTest {
+  private val log = Logger.getLogger(this.getClass)
+  @Autowired val resumeService: ResumeService = null
+
+  @Test def getAvatarTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getAvatar(2)))
+  }
+
+  @Test def getResumeBaseInfoTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeBaseInfo(11)))
+  }
+
+  @Test def setPersonalAdvantageTest: Unit = {
+    resumeService.setPersonalAdvantage(11, "天生丽质，温柔娴淑，知书达理，温文尔雅")
+  }
+
+  @Test def getPersonalAdvantageTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getPersonalAdvantage(11)))
+  }
+
+  @Test def getPositionTypeTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getPositionType(0)))
+  }
+
+  @Test def getResumePositionTypeTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumePositionType(11)))
+  }
+
+  @Test def getResumeAreaTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeArea(11)))
+  }
+
+  @Test def getJobIntentionTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getJobIntention(11)))
+  }
+
+  @Test def setJobIntentionTest: Unit = {
+    val param = new JobIntentionParam
+    param.setArrivalTime(2)
+    val addressIds = new JavaArrayList[Integer]()
+    addressIds.add(275)
+    addressIds.add(276)
+    addressIds.add(277)
+    param.setExpectAddress(addressIds)
+    param.setMaxSalary(40)
+    param.setMinSalary(30)
+    param.setPositionType(2)
+    val positionTypeIds = new JavaArrayList[Integer]()
+    positionTypeIds.add(402)
+    positionTypeIds.add(403)
+    positionTypeIds.add(404)
+    param.setExpectPosition(positionTypeIds)
+    resumeService.setJobIntention(11, param)
+  }
+
+  @Test def getResumeExperienceListTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeExperienceList(13, 1)))
+  }
+
+  @Test def getResumeExperienceTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeExperience(65)))
+  }
+
+  @Test def setResumeExperienceTest: Unit = {
+    val param = new ResumeExperienceParam
+    param.setDescription("懒的和你瞎说")
+    param.setEndTime(DateUtil.getTimeStamp + 1000 * 60 * 60 * 24 * 20)
+    param.setName("我的实习名称")
+    param.setPosition("Java研发工程师")
+    param.setStartTime(DateUtil.getTimeStamp)
+    resumeService.setResumeExperience(65, param, 2)
+  }
+
+  @Test def updateResumeExperienceTest: Unit = {
+    val param = new ResumeExperienceParam
+    param.setDescription("懒的和你瞎说,这是瞎搞")
+    param.setEndTime(DateUtil.getTimeStamp + 1000 * 60 * 60 * 24 * 20)
+    param.setName("我的实习名称111")
+    param.setPosition("Java研发工程师111")
+    param.setStartTime(DateUtil.getTimeStamp)
+    resumeService.updateResumeExperience(88, param)
+  }
+
+  @Test def deleteResumeExperienceTest: Unit = {
+    resumeService.deleteResumeExperience(11, 91, 1)
+  }
+
+  @Test def setResumeEducationTest: Unit = {
+    val param = new ResumeEducationParam
+    param.setEducation(2)
+    param.setMajor("Java ,C++")
+    param.setName("杭州电子科技大学")
+    param.setProfession("软件工程")
+    param.setStarTime(DateUtil.getTimeStamp - 24 * 60 * 60 * 1000 * 365)
+    param.setEndTime(DateUtil.getTimeStamp)
+    resumeService.setResumeEducation(11, param)
+  }
+
+  @Test def updateResumeEducationTest: Unit = {
+    val param = new ResumeEducationParam
+    param.setEducation(1)
+    param.setMajor("Java ,C++,UML")
+    param.setName("杭州电子科技大学")
+    param.setProfession("软件工程")
+    param.setStarTime(DateUtil.getTimeStamp - 24 * 60 * 60 * 1000 * 365)
+    param.setEndTime(DateUtil.getTimeStamp)
+    resumeService.updateResumeEducation(16, param)
+  }
+
+  @Test def getResumeEducationTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeEducation(16)))
+  }
+
+  @Test def getResumeEducationListTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getResumeEducationList(11)))
+  }
+
+  @Test def deleteResumeEducationListTest: Unit = {
+    resumeService.deleteResumeEducation(11, 16)
+  }
+}

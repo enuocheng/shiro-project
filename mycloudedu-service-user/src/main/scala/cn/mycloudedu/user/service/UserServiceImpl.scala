@@ -1,0 +1,194 @@
+package cn.mycloudedu.user.service
+
+import java.util.{UUID, List => JavaList, Map => JavaMap}
+
+import cn.mycloudedu.framework.core.exception.BusinessException
+import cn.mycloudedu.framework.core.utils.{DateUtil, RegexUtil}
+import cn.mycloudedu.sms.conf.SmsConfig
+import cn.mycloudedu.sms.service.SmsService
+import cn.mycloudedu.user.biz.{UserBiz, UserCacheBiz}
+import cn.mycloudedu.user.config.UserConfig
+import cn.mycloudedu.user.dao.{UserCustomMapper, UserMapper}
+import cn.mycloudedu.user.domain.{User, UserAuth}
+import cn.mycloudedu.user.dto.{AreaDTO, SchoolAuthenticateSuccessDTO, UserInfo}
+import cn.mycloudedu.user.exception.UserErrorCode
+import cn.mycloudedu.user.param.{SchoolAuthenticationParam, UserInfoParam}
+import cn.mycloudedu.user.util.PasswordHelper
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+/**
+  * Created by e诺
+  * on 2017/3/30
+  * Time 下午6:06
+  */
+@Service("userService")
+class UserServiceImpl extends UserService {
+  @Autowired private val userBiz: UserBiz = null
+  @Autowired private val userCacheBiz: UserCacheBiz = null
+  @Autowired private val smsConfig: SmsConfig = null
+  @Autowired private val userConfig: UserConfig = null
+  @Autowired private val smsService: SmsService = null
+  @Autowired private val userMapper: UserMapper = null
+  @Autowired private val userCustomMapper: UserCustomMapper = null
+  @Autowired private val passwordHelper: PasswordHelper = null
+
+  override def setLastLoginTime(userId: Int): (Boolean, String, String) = {
+    userBiz.setLastLoginTime(userId)
+  }
+
+  override def getLoginUser(username: String): UserAuth = {
+    return userBiz.getLoginUser(username)
+  }
+
+  override def getValidateCode(mobile: String, template: String): Unit = {
+    template match {
+      case "register" => userBiz.getRegisterValidateCode(mobile, smsConfig.getSmsTemplateCodeRegister)
+      case "forget" => userBiz.getForgetValidateCode(mobile, smsConfig.getSmsTemplateCodeForget)
+      case "bind" => userBiz.getBindValidateCode(mobile, smsConfig.getSmsTemplateCodeBind)
+      case "modify" => userBiz.getModifyValidateCode(mobile, smsConfig.getSmsTemplateCodeModify)
+      case _ => throw new BusinessException(UserErrorCode(UserErrorCode.SMS_TEMPLATE_ERROR))
+    }
+  }
+
+  override def checkValidateCode(mobile: String, template: String, code: String): Boolean = {
+    template match {
+      case "register" => smsService.validateCode(mobile, smsConfig.getSmsTemplateCodeRegister, code)
+      case "forget" => smsService.validateCode(mobile, smsConfig.getSmsTemplateCodeForget, code)
+      case "bind" => smsService.validateCode(mobile, smsConfig.getSmsTemplateCodeBind, code)
+      case "modify" => smsService.validateCode(mobile, smsConfig.getSmsTemplateCodeModify, code)
+      case _ => throw new BusinessException(UserErrorCode(UserErrorCode.SMS_TEMPLATE_ERROR))
+    }
+  }
+
+  override def checkRegisterValidateCode(mobile: String, code: String): Boolean = {
+    this.checkValidateCode(mobile, "register", code)
+  }
+
+  override def userRegister(mobile: String, password: String): Unit = {
+    val user1 = userBiz.getUserByMobile(mobile)
+    if (user1 != null) {
+      throw new BusinessException(UserErrorCode(UserErrorCode.MOBILE_EXISTS_ERROR))
+    }
+    val user: User = new User()
+    user.setMobile(mobile)
+    user.setMobileVerified(1)
+    user.setCreateTime(DateUtil.getTimeStamp)
+    user.setNickname(userConfig.getNicknamePrefix + "_" + mobile)
+    user.setPassword(password)
+    passwordHelper.encryptPassword(user)
+    userMapper.insertSelective(user)
+  }
+
+  override def resetPassword(mobile: String, password: String): Unit = {
+    userBiz.getLoginUser(mobile) match {
+      case userAuth: UserAuth =>
+        val user = new User
+        user.setPassword(password)
+        user.setId(userAuth.getId)
+        passwordHelper.encryptPassword(user)
+        userMapper.updateByPrimaryKeySelective(user)
+      case _ => throw new BusinessException(UserErrorCode(UserErrorCode.USER_NOTFOUND_ERROR))
+    }
+  }
+
+  override def modifyPassword(userId: Integer, password: String): Unit = {
+    userMapper.selectByPrimaryKey(userId) match {
+      case user: User => user.setPassword(password)
+        passwordHelper.encryptPassword(user)
+        userMapper.updateByPrimaryKeySelective(user)
+      case _ => throw new BusinessException(UserErrorCode(UserErrorCode.USER_NOTFOUND_ERROR))
+    }
+  }
+
+  override def verifyPassword(userId: Int, password: String): Boolean = {
+    val user = userMapper.selectByPrimaryKey(userId)
+    var isPass = false
+    if (user != null) {
+      val oldPassword = user.getPassword
+      user.setPassword(password)
+      passwordHelper.encryptPassword(user)
+      if (oldPassword.equals(user.getPassword))
+        isPass = true
+      isPass
+    } else {
+      throw new BusinessException(UserErrorCode(UserErrorCode.USER_NOTFOUND_ERROR))
+    }
+  }
+
+  override def getBindValidateCode(userId: Int, mobile: String): Boolean = {
+    if (!RegexUtil.isMobile(mobile)) {
+      throw new BusinessException(UserErrorCode(UserErrorCode.MOBILE_REGEX_ERROR))
+    }
+    val user = userCustomMapper.getUserByMobileExceptSelf(userId, mobile)
+    if (user != null) {
+      throw new BusinessException(UserErrorCode(UserErrorCode.MOBILE_EXISTS_ERROR))
+    } else {
+      this.getValidateCode(mobile, "bind")
+      true
+    }
+  }
+
+  override def checkBindValidateCode(userId: Int, mobile: String, code: String): Unit = {
+    val result: Boolean = this.checkValidateCode(mobile, "bind", code)
+    if (result) {
+      val user = userMapper.selectByPrimaryKey(userId)
+      if (user != null) {
+        user.setMobile(mobile)
+        user.setMobileVerified(1)
+        userMapper.updateByPrimaryKeySelective(user)
+      }
+    }
+  }
+
+  override def getArea(parentId: Int): JavaList[JavaMap[Int, String]] = {
+    val area: JavaList[JavaMap[Int, String]] = userBiz.getArea(parentId)
+    area
+  }
+
+  override def getUserInfo(userId: Int): UserInfo = {
+    userBiz.getUserInfo(userId)
+  }
+
+  override def saveUserInfo(userId: Int, param: UserInfoParam, birthday: Long): Unit = {
+    userBiz.saveUserInfo(userId, param, birthday)
+  }
+
+  override def getAreaByLevel(level1Id: Int, level2Id: Int, level3Id: Int): JavaMap[Int, String] = {
+    userBiz.getAreaByLevel(level1Id, level2Id, level3Id)
+  }
+
+  override def authenticateSchool(userId: Int, param: SchoolAuthenticationParam): Boolean = {
+    userBiz.authenticateSchool(userId, param)
+  }
+
+  override def getCollege(search: String): JavaList[JavaMap[Int, String]] = {
+    userBiz.getCollege(search)
+  }
+
+  override def getCollegeMapId(): JavaList[JavaMap[String, Int]] = {
+    userBiz.getCollegeMapId()
+  }
+
+  override def schoolAuthenticateSuccess(userId: Int): SchoolAuthenticateSuccessDTO = {
+    userBiz.schoolAuthenticateSuccess(userId)
+  }
+
+  override def isUserSelfMobile(userId: Int, mobile: String): Boolean = {
+    userBiz.isUserSelfMobile(userId, mobile)
+  }
+
+  override def cacheUuid: String = {
+    val uuid = UUID.randomUUID.toString
+    userCacheBiz.saveCacheDomain(uuid)
+    uuid
+  }
+
+  override def checkUuid(uuid: String): Boolean = {
+    userCacheBiz.checkCacheDomain(uuid)
+  }
+
+  override def getAllArea(): JavaList[AreaDTO] = {
+    userBiz.getAllArea
+  }
+}

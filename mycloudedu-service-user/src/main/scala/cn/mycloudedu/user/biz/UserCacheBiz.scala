@@ -1,0 +1,90 @@
+package cn.mycloudedu.user.biz
+
+import java.util.concurrent.TimeoutException
+
+import cn.mycloudedu.framework.core.exception.BusinessException
+import cn.mycloudedu.framework.core.utils.DateUtil
+import cn.mycloudedu.sms.exception.SmsErrorCode
+import cn.mycloudedu.user.domain.CacheDomain
+import com.google.code.ssm.Cache
+import com.google.code.ssm.api.format.SerializationType
+import com.google.code.ssm.providers.CacheException
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+import scala.beans.BeanProperty
+
+/**
+  * Created by e诺
+  * on 2017/5/10
+  * Time 下午4:43
+  */
+@Service
+class UserCacheBiz {
+  private val log = Logger.getLogger(this.getClass)
+  @Autowired private val cache: Cache = null
+  @BeanProperty val prefix = ""
+  @BeanProperty val cacheTime = 10 //缓存时间
+
+
+  private def getCacheKey(uuid: String) = prefix + uuid
+
+  def saveCacheDomain(uuid: String): Unit = {
+    val key = getCacheKey(uuid)
+    val cacheDomain = new CacheDomain
+    cacheDomain.setTime(DateUtil.getCurrentUnixTime.toInt)
+    cacheDomain.setUuid(uuid)
+    try{
+      cache.set(key, cacheTime * 60, cacheDomain, SerializationType.JAVA)
+    }
+    catch {
+      case e: TimeoutException =>
+        log.error("缓存超时" + e.getMessage)
+      case e: CacheException =>
+        log.error("缓存错误" + e.getMessage)
+    }
+  }
+
+
+  def getCacheDomain(uuid: String): CacheDomain = {
+    val key = getCacheKey(uuid)
+    var cacheDomain :CacheDomain= null
+    try{
+      cacheDomain = cache.get(key, SerializationType.JAVA)
+    }
+    catch {
+      case e: TimeoutException =>
+        log.error("缓存超时" + e.getMessage)
+      case e: CacheException =>
+        log.error("缓存错误" + e.getMessage)
+    }
+    cacheDomain
+  }
+
+  def deleteCacheDomain(uuid: String): Unit = {
+    val key = getCacheKey(uuid)
+    try{
+      cache.delete(key)
+    }
+    catch {
+      case e: TimeoutException =>
+        log.error("缓存超时" + e.getMessage)
+      case e: CacheException =>
+        log.error("缓存错误" + e.getMessage)
+    }
+  }
+
+  def checkCacheDomain(uuid: String): Boolean = {
+    val cacheDomain = getCacheDomain(uuid)
+    if (cacheDomain.getUuid == null || "" == uuid)
+      throw new BusinessException(SmsErrorCode(SmsErrorCode.VALIDATE_CODE_MISMARCH))
+    val currentTime = DateUtil.getCurrentUnixTime.toInt
+    if (currentTime - cacheDomain.getTime > cacheTime * 60)
+      throw new BusinessException(SmsErrorCode(SmsErrorCode.VALIDATE_CODE_TIMEOUT))
+    if (!(cacheDomain.getUuid.trim == uuid.trim))
+      throw new BusinessException(SmsErrorCode(SmsErrorCode.VALIDATE_CODE_TIMEOUT))
+    this.deleteCacheDomain(uuid)
+    true
+  }
+}

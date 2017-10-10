@@ -1,0 +1,88 @@
+package cn.mycloudedu.controller
+
+import javax.servlet.http.HttpServletRequest
+
+import cn.mycloudedu.framework.core.exception.{SystemErrorCode, BusinessException}
+import cn.mycloudedu.framework.core.result.TotalResult
+import cn.mycloudedu.sms.exception.SmsErrorCode
+import cn.mycloudedu.user.dto.UserResult
+import cn.mycloudedu.user.exception.UserErrorCode
+import cn.mycloudedu.user.service.UserService
+import org.apache.shiro.SecurityUtils
+import org.apache.shiro.authc._
+import org.apache.shiro.authz.annotation.RequiresGuest
+import org.apache.shiro.session.Session
+import org.apache.shiro.subject.Subject
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Controller
+import org.springframework.util.Assert
+import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, RequestParam, ResponseBody}
+
+/**
+  * Created by e诺
+  * on 2017/3/30
+  * Time 下午9:40
+  */
+@Controller
+@RequestMapping(Array("user"))
+class LoginController extends BaseController {
+  @Autowired private val userService: UserService = null
+
+  @RequiresGuest
+  @RequestMapping(value = Array("login"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def teacherLogin(@RequestParam("username") username: String, @RequestParam("password") password: String, @RequestParam(value = "rememberMe", required = false, defaultValue = "false") rememberMe: Boolean): AnyRef = {
+    Assert.notNull(username, "用户名不能为空")
+    Assert.notNull(password, "密码不能为空")
+    val subject: Subject = SecurityUtils.getSubject
+    val token: UsernamePasswordToken = new UsernamePasswordToken(username, password)
+    try {
+      subject.login(token)
+    }
+    catch {
+      case uae: UnknownAccountException => {
+        throw new BusinessException(UserErrorCode(UserErrorCode.UNKNOWN_ACCOUNT_ERROR))
+      }
+      case ice: IncorrectCredentialsException => {
+        throw new BusinessException(UserErrorCode(UserErrorCode.INCORRECT_PASSWORD_ERROR))
+      }
+      case lae: LockedAccountException => {
+        throw new BusinessException(UserErrorCode(UserErrorCode.LOCKED_ACCOUNT_ERROR))
+      }
+      case eae: ExcessiveAttemptsException => {
+        throw new BusinessException(UserErrorCode(UserErrorCode.EXCESSIVE_ATTEMPTS_ERROR))
+      }
+      case ae: AuthenticationException => {
+        ae.printStackTrace
+        throw new BusinessException(UserErrorCode(UserErrorCode.AUTHENTICATION_ERROR))
+      }
+    }
+    if (rememberMe) {
+      token.setRememberMe(true)
+    }
+    val session: Session = subject.getSession
+    val user: UserResult = session.getAttribute("user").asInstanceOf[UserResult]
+    val (verified, collegeName, realname) = userService.setLastLoginTime(user.getId)
+    user.setVerified(verified)
+    user.setCollegeName(collegeName)
+    user.setRealname(realname)
+    TotalResult.newInstance(user)
+  }
+
+  @RequiresGuest
+  @RequestMapping(value = Array("login/back"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=UTF-8"))
+  def loginBack(request: HttpServletRequest) {
+    val token: String = request.getParameter("token")
+    if (token == null) {
+      throw new BusinessException(SystemErrorCode.apply(SystemErrorCode.USER_NOTLOGIN_ERROR))
+    }
+    else {
+      throw new BusinessException(SystemErrorCode.apply(SystemErrorCode.SESSION_TIMEOUT_ERROR))
+    }
+  }
+
+  @RequiresGuest
+  @RequestMapping(value = Array("auth/back"), method = Array(RequestMethod.GET), produces = Array("application/json;charset=UTF-8"))
+  def authBack {
+    throw new BusinessException(SystemErrorCode.apply(SystemErrorCode.USER_NOTPRIVILEGE_ERROR))
+  }
+}

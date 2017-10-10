@@ -1,0 +1,126 @@
+package cn.mycloudedu.user.biz
+
+import java.util.concurrent.{CountDownLatch, Executors}
+import java.util.{ArrayList => JavaArrayList, HashMap => JavaHashMap, List => JavaList, Map => JavaMap}
+
+import cn.mycloudedu.framework.core.result.{PageOrder, PageResult}
+import cn.mycloudedu.framework.core.utils.{DateUtil, StringUtil}
+import cn.mycloudedu.user.dao.{CollegeDepartmentBackupMapper, CollegeMapper}
+import cn.mycloudedu.user.domain.{CollegeDepartment, Data, RootData}
+import com.github.pagehelper.{PageHelper, PageInfo}
+import net.sf.json.{JSONArray, JSONObject}
+import org.apache.log4j.Logger
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+import scala.collection.JavaConversions._
+
+/**
+  * Created by e诺
+  * on 2017/4/25
+  * Time 上午9:39
+  */
+@Service
+class CollegeDepartmentBiz {
+  private val log = Logger.getLogger(this.getClass)
+  //  @Autowired private val collegeDepartmentMapper: CollegeDepartmentMapper = null
+  @Autowired private val collegeDepartmentBackupMapper: CollegeDepartmentBackupMapper = null
+  @Autowired private val collegeMapper: CollegeMapper = null
+
+  def pageCollegeMapId(pageOrder: PageOrder): PageResult[JavaHashMap[String, Int]] = {
+    PageHelper.startPage(pageOrder.getCurrent, pageOrder.getPageSize)
+    val mapId: JavaList[JavaHashMap[String, Int]] = collegeMapper.getCollegeMapId()
+    val pageInfo = new PageInfo[JavaHashMap[String, Int]](mapId)
+    new PageResult[JavaHashMap[String, Int]](pageOrder, pageInfo)
+  }
+
+  def getDataList(pageOrder: PageOrder) = pageCollegeMapId(pageOrder).getDataList.asInstanceOf[JavaList[JavaHashMap[String, Int]]]
+
+  def getJsonObjectList(file: String): JavaList[RootData] = {
+    val jsonString: String = StringUtil.jsonToString(file)
+    val javaObject: JavaList[RootData] = this.jsonToJavaObject(jsonString)
+    javaObject
+  }
+
+  def multiThreadImportData(file: String, pageOrder: PageOrder): Unit = {
+    val startTime = DateUtil.getTimeStamp
+    val size = this.pageCollegeMapId(pageOrder).getPages
+    val jsonObjectList: JavaList[RootData] = this.getJsonObjectList(file)
+    val executor = Executors.newFixedThreadPool(size);
+    val countDownLatch = new CountDownLatch(size)
+    for (i <- 1 to size) {
+      pageOrder.setCurrent(i)
+      log.info("#############################" + pageOrder.getCurrent + "  ," + pageOrder.getPageSize)
+      val dataList: JavaList[JavaHashMap[String, Int]] = this.getDataList(pageOrder)
+      executor.execute(new Runnable {
+        override def run(): Unit = {
+          try {
+            importData(jsonObjectList, dataList)
+            log.info("@@@@@@@@@@@@@@@@@@@@@@@@@@@@ :" + "闹着玩的!!!!!!!!!!!!" + Thread.currentThread().getName)
+          } catch {
+            case t: Throwable => t.printStackTrace(System.err)
+          } finally {
+            if (countDownLatch != null) {
+              countDownLatch.countDown()
+            }
+          }
+        }
+      })
+    }
+    countDownLatch.await()
+    executor.shutdown()
+    log.info("#$#$$#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" + "线程执行完毕")
+    val endTime = DateUtil.getTimeStamp
+    log.info("#$#$$#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ 导入数据所需要的时间为: " + (endTime - startTime))
+  }
+
+  def importData(javaObject: JavaList[RootData], mapId: JavaList[JavaHashMap[String, Int]]): Unit = {
+    for (id: JavaHashMap[String, Int] <- mapId) {
+      for (rootData: RootData <- javaObject) {
+        val name1 = rootData.getName
+        val collegeDepartment1 = new CollegeDepartment
+        collegeDepartment1.setLevel(1)
+        collegeDepartment1.setName(name1)
+        collegeDepartment1.setCollegeId(id.get("id").toInt)
+        collegeDepartmentBackupMapper.insertSelective(collegeDepartment1)
+        val datas: JavaList[Data] = rootData.getData
+        for (data: Data <- datas) {
+          val name2 = data.getName
+          val collegeDepartment2 = new CollegeDepartment
+          collegeDepartment2.setLevel(2)
+          collegeDepartment2.setName(name2)
+          collegeDepartment2.setParentId(collegeDepartment1.getId)
+          collegeDepartment2.setCollegeId(id.get("id").toInt)
+          collegeDepartmentBackupMapper.insertSelective(collegeDepartment2)
+          val list: JavaList[String] = data.getData
+          val name3List: JavaList[CollegeDepartment] = new JavaArrayList[CollegeDepartment]()
+          for (internalData: String <- list) {
+            val name3 = internalData
+            val collegeDepartment3 = new CollegeDepartment
+            collegeDepartment3.setLevel(3)
+            collegeDepartment3.setName(name3)
+            collegeDepartment3.setParentId(collegeDepartment2.getId)
+            collegeDepartment3.setCollegeId(id.get("id").toInt)
+            name3List.add(collegeDepartment3)
+          }
+          //批量插入
+          collegeDepartmentBackupMapper.batchInsertImportData(name3List)
+        }
+      }
+    }
+  }
+
+  def jsonToJavaObject(jsonString: String): JavaList[RootData] = {
+    val jsonArray: JSONArray = JSONArray.fromObject(jsonString)
+    val list = new JavaArrayList[RootData]()
+    for (i <- 0 until jsonArray.size()) {
+      val jSONObject: JSONObject = jsonArray.getJSONObject(i)
+      val array: JSONArray = jSONObject.getJSONArray("data")
+      val datas: JavaList[Data] = JSONArray.toCollection(array, classOf[Data]).asInstanceOf[JavaList[Data]]
+      val rootData: RootData = JSONObject.toBean(jSONObject, classOf[RootData]).asInstanceOf[RootData]
+      rootData.setData(datas)
+      list.add(rootData)
+    }
+    list
+  }
+}

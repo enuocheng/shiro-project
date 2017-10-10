@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.CompanyMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.Company" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="intro" property="intro" jdbcType="VARCHAR" />
+    <result column="short_name" property="shortName" jdbcType="VARCHAR" />
+    <result column="industry_id" property="industryId" jdbcType="INTEGER" />
+    <result column="industry_name" property="industryName" jdbcType="VARCHAR" />
+    <result column="industry_tag" property="industryTag" jdbcType="VARCHAR" />
+    <result column="property" property="property" jdbcType="INTEGER" />
+    <result column="province" property="province" jdbcType="INTEGER" />
+    <result column="city" property="city" jdbcType="INTEGER" />
+    <result column="district" property="district" jdbcType="INTEGER" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
+    <result column="apply_time" property="applyTime" jdbcType="BIGINT" />
+    <result column="website" property="website" jdbcType="VARCHAR" />
+    <result column="scale" property="scale" jdbcType="INTEGER" />
+    <result column="tag" property="tag" jdbcType="VARCHAR" />
+    <result column="approve_status" property="approveStatus" jdbcType="BIT" />
+    <result column="approved_time" property="approvedTime" jdbcType="BIGINT" />
+    <result column="approve_note" property="approveNote" jdbcType="VARCHAR" />
+    <result column="approver" property="approver" jdbcType="VARCHAR" />
+    <result column="license_url" property="licenseUrl" jdbcType="VARCHAR" />
+    <result column="stage" property="stage" jdbcType="INTEGER" />
+    <result column="pictures" property="pictures" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, intro, short_name, industry_id, industry_name, industry_tag, property, 
+    province, city, district, address, logo, apply_time, website, scale, tag, approve_status, 
+    approved_time, approve_note, approver, license_url, stage, pictures
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from company
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from company
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.Company" >
+    insert into company (id, name, intro, 
+      short_name, industry_id, industry_name, 
+      industry_tag, property, province, 
+      city, district, address, 
+      logo, apply_time, website, 
+      scale, tag, approve_status, 
+      approved_time, approve_note, approver, 
+      license_url, stage, pictures
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}, 
+      #{shortName,jdbcType=VARCHAR}, #{industryId,jdbcType=INTEGER}, #{industryName,jdbcType=VARCHAR}, 
+      #{industryTag,jdbcType=VARCHAR}, #{property,jdbcType=INTEGER}, #{province,jdbcType=INTEGER}, 
+      #{city,jdbcType=INTEGER}, #{district,jdbcType=INTEGER}, #{address,jdbcType=VARCHAR}, 
+      #{logo,jdbcType=VARCHAR}, #{applyTime,jdbcType=BIGINT}, #{website,jdbcType=VARCHAR}, 
+      #{scale,jdbcType=INTEGER}, #{tag,jdbcType=VARCHAR}, #{approveStatus,jdbcType=BIT}, 
+      #{approvedTime,jdbcType=BIGINT}, #{approveNote,jdbcType=VARCHAR}, #{approver,jdbcType=VARCHAR}, 
+      #{licenseUrl,jdbcType=VARCHAR}, #{stage,jdbcType=INTEGER}, #{pictures,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.Company" >
+    insert into company
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="intro != null" >
+        intro,
+      </if>
+      <if test="shortName != null" >
+        short_name,
+      </if>
+      <if test="industryId != null" >
+        industry_id,
+      </if>
+      <if test="industryName != null" >
+        industry_name,
+      </if>
+      <if test="industryTag != null" >
+        industry_tag,
+      </if>
+      <if test="property != null" >
+        property,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="district != null" >
+        district,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="logo != null" >
+        logo,
+      </if>
+      <if test="applyTime != 0" >
+        apply_time,
+      </if>
+      <if test="website != null" >
+        website,
+      </if>
+      <if test="scale != null" >
+        scale,
+      </if>
+      <if test="tag != null" >
+        tag,
+      </if>
+      <if test="approveStatus != null" >
+        approve_status,
+      </if>
+      <if test="approvedTime != 0" >
+        approved_time,
+      </if>
+      <if test="approveNote != null" >
+        approve_note,
+      </if>
+      <if test="approver != null" >
+        approver,
+      </if>
+      <if test="licenseUrl != null" >
+        license_url,
+      </if>
+      <if test="stage != null" >
+        stage,
+      </if>
+      <if test="pictures != null" >
+        pictures,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null" >
+        #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="industryId != null" >
+        #{industryId,jdbcType=INTEGER},
+      </if>
+      <if test="industryName != null" >
+        #{industryName,jdbcType=VARCHAR},
+      </if>
+      <if test="industryTag != null" >
+        #{industryTag,jdbcType=VARCHAR},
+      </if>
+      <if test="property != null" >
+        #{property,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=INTEGER},
+      </if>
+      <if test="district != null" >
+        #{district,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != 0" >
+        #{applyTime,jdbcType=BIGINT},
+      </if>
+      <if test="website != null" >
+        #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="scale != null" >
+        #{scale,jdbcType=INTEGER},
+      </if>
+      <if test="tag != null" >
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="approveStatus != null" >
+        #{approveStatus,jdbcType=BIT},
+      </if>
+      <if test="approvedTime != 0" >
+        #{approvedTime,jdbcType=BIGINT},
+      </if>
+      <if test="approveNote != null" >
+        #{approveNote,jdbcType=VARCHAR},
+      </if>
+      <if test="approver != null" >
+        #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseUrl != null" >
+        #{licenseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="pictures != null" >
+        #{pictures,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.Company" >
+    update company
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="intro != null" >
+        intro = #{intro,jdbcType=VARCHAR},
+      </if>
+      <if test="shortName != null" >
+        short_name = #{shortName,jdbcType=VARCHAR},
+      </if>
+      <if test="industryId != null" >
+        industry_id = #{industryId,jdbcType=INTEGER},
+      </if>
+      <if test="industryName != null" >
+        industry_name = #{industryName,jdbcType=VARCHAR},
+      </if>
+      <if test="industryTag != null" >
+        industry_tag = #{industryTag,jdbcType=VARCHAR},
+      </if>
+      <if test="property != null" >
+        property = #{property,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=INTEGER},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=INTEGER},
+      </if>
+      <if test="district != null" >
+        district = #{district,jdbcType=INTEGER},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null" >
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+      <if test="applyTime != 0" >
+        apply_time = #{applyTime,jdbcType=BIGINT},
+      </if>
+      <if test="website != null" >
+        website = #{website,jdbcType=VARCHAR},
+      </if>
+      <if test="scale != null" >
+        scale = #{scale,jdbcType=INTEGER},
+      </if>
+      <if test="tag != null" >
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="approveStatus != null" >
+        approve_status = #{approveStatus,jdbcType=BIT},
+      </if>
+      <if test="approvedTime != 0" >
+        approved_time = #{approvedTime,jdbcType=BIGINT},
+      </if>
+      <if test="approveNote != null" >
+        approve_note = #{approveNote,jdbcType=VARCHAR},
+      </if>
+      <if test="approver != null" >
+        approver = #{approver,jdbcType=VARCHAR},
+      </if>
+      <if test="licenseUrl != null" >
+        license_url = #{licenseUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="stage != null" >
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="pictures != null" >
+        pictures = #{pictures,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.Company" >
+    update company
+    set name = #{name,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=VARCHAR},
+      short_name = #{shortName,jdbcType=VARCHAR},
+      industry_id = #{industryId,jdbcType=INTEGER},
+      industry_name = #{industryName,jdbcType=VARCHAR},
+      industry_tag = #{industryTag,jdbcType=VARCHAR},
+      property = #{property,jdbcType=INTEGER},
+      province = #{province,jdbcType=INTEGER},
+      city = #{city,jdbcType=INTEGER},
+      district = #{district,jdbcType=INTEGER},
+      address = #{address,jdbcType=VARCHAR},
+      logo = #{logo,jdbcType=VARCHAR},
+      apply_time = #{applyTime,jdbcType=BIGINT},
+      website = #{website,jdbcType=VARCHAR},
+      scale = #{scale,jdbcType=INTEGER},
+      tag = #{tag,jdbcType=VARCHAR},
+      approve_status = #{approveStatus,jdbcType=BIT},
+      approved_time = #{approvedTime,jdbcType=BIGINT},
+      approve_note = #{approveNote,jdbcType=VARCHAR},
+      approver = #{approver,jdbcType=VARCHAR},
+      license_url = #{licenseUrl,jdbcType=VARCHAR},
+      stage = #{stage,jdbcType=INTEGER},
+      pictures = #{pictures,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="hotCompany" resultType="java.lang.String">
+    SELECT logo
+    FROM company
+    WHERE approve_status=1 AND company.logo !=''
+  </select>
+</mapper>

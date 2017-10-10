@@ -1,0 +1,23 @@
+package cn.mycloudedu.user.dao
+
+import org.springframework.stereotype.Repository
+
+/**
+  * Created by e诺
+  * on 2017/5/4
+  * Time 上午9:56
+  */
+@Repository
+trait ResumeMapper {
+  def deleteByPrimaryKey(id: Integer): Int
+
+  def insert(record: Nothing): Int
+
+  def insertSelective(record: Nothing): Int
+
+  def selectByPrimaryKey(id: Integer): Nothing
+
+  def updateByPrimaryKeySelective(record: Nothing): Int
+
+  def updateByPrimaryKey(record: Nothing): Int
+}

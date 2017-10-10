@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mycloudedu.user.dao.CollegeMapper">
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.College">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="department" jdbcType="VARCHAR" property="department" />
+    <result column="logo" jdbcType="VARCHAR" property="logo" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, level, province, city, remark, department, logo
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from college
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from college
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.College">
+    insert into college (id, name, level, 
+      province, city, remark, 
+      department, logo)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{level,jdbcType=VARCHAR}, 
+      #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{department,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.College">
+    insert into college
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="level != null">
+        level,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="department != null">
+        department,
+      </if>
+      <if test="logo != null">
+        logo,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        #{logo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.College">
+    update college
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+        level = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null">
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="logo != null">
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.College">
+    update college
+    set name = #{name,jdbcType=VARCHAR},
+      level = #{level,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      department = #{department,jdbcType=VARCHAR},
+      logo = #{logo,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getCollege" resultType="java.util.HashMap">
+    SELECT id,name
+    FROM college
+      <where>
+          <if test="search != null and search != ''">
+              AND name LIKE CONCAT('%',#{search,jdbcType=VARCHAR},'%')
+          </if>
+      </where>
+  </select>
+  <select id="getCollegeMapId" resultType="java.util.Map">
+    select id
+     from college
+  </select>
+</mapper>

@@ -1,0 +1,33 @@
+package cn.mycloudedu.user.service
+
+import cn.mycloudedu.framework.core.result.{PageOrder, PageResult}
+import cn.mycloudedu.user.biz.HomePageBiz
+import cn.mycloudedu.user.dto.RecommendPositionDTO
+import cn.mycloudedu.user.param.SearchPositionParam
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+/**
+  * Created by e诺
+  * on 2017/4/20
+  * Time 下午2:30
+  */
+@Service("homePageService")
+class HomePageServiceImpl extends HomePageService {
+  @Autowired val homePageBiz: HomePageBiz = null
+
+  override def hotCompany(pageOrder: PageOrder): PageResult[String] = {
+    pageOrder.setDefaultPropertyDirection("approvedTime", "desc")
+    homePageBiz.hotCompany(pageOrder)
+  }
+
+  override def recommendPosition(pageOrder: PageOrder): PageResult[RecommendPositionDTO] = {
+    pageOrder.setDefaultPropertyDirection("updateTime", "desc")
+    homePageBiz.recommendPosition(pageOrder)
+  }
+
+  override def searchPosition(param: SearchPositionParam, pageOrder: PageOrder): PageResult[RecommendPositionDTO] = {
+    pageOrder.setDefaultPropertyDirection("updateTime", "desc")
+    homePageBiz.searchPosition(param, pageOrder)
+  }
+}

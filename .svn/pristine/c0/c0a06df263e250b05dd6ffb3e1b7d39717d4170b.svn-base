@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.PracticeMapper">
+    <resultMap id="BaseResultMap" type="cn.mycloudedu.user.dto.PracticePlanDTO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="position_name" property="position" jdbcType="VARCHAR"/>
+        <result column="standard" property="standard" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="BIGINT"/>
+        <result column="start_time" property="startTime" jdbcType="BIGINT"/>
+        <result column="end_time" property="endTime" jdbcType="BIGINT"/>
+    </resultMap>
+    <resultMap id="EditLogPlanBaseResultMap" type="cn.mycloudedu.user.dto.EditLogPlanDTO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <resultMap id="PracticePlanDetailsResultMap" type="cn.mycloudedu.user.dto.PracticePlanDetailsDTO" extends="BaseResultMap">
+        <result column="etiquette" property="etiquette" jdbcType="INTEGER"/>
+        <result column="attitude" property="attitude" jdbcType="INTEGER"/>
+        <result column="work_ability" property="workAbility" jdbcType="INTEGER"/>
+        <result column="learning_ability" property="learningAbility" jdbcType="INTEGER"/>
+        <result column="achievement" property="achievement" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    p.id, p.name, ps.position_name, p.standard, p.create_time, p.start_time, p.end_time
+    </sql>
+    <sql id="Practice_Plan_Details">
+        ps.etiquette,ps.attitude,ps.work_ability,ps.learning_ability,ps.achievement
+    </sql>
+    <select id="getPracticePlanList" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM project p
+        JOIN project_student ps on ps.project_id=p.id
+        WHERE ps.user_id=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getEditLogPlanList" resultMap="EditLogPlanBaseResultMap">
+        SELECT p.id,p.name
+        FROM project p
+        JOIN project_student ps on ps.project_id=p.id
+        WHERE ps.user_id=#{userId,jdbcType=INTEGER}
+    </select>
+    <select id="getPracticePlanDetails" resultMap="PracticePlanDetailsResultMap">
+        SELECT <include refid="Base_Column_List"/> , <include refid="Practice_Plan_Details"/>
+        FROM project p
+        JOIN project_student ps on ps.project_id=p.id
+        WHERE p.id=#{projectId,jdbcType=INTEGER} AND ps.user_id=#{userId,jdbcType=INTEGER}
+    </select>
+</mapper>

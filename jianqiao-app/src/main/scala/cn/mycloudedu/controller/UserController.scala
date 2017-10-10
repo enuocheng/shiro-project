@@ -1,0 +1,288 @@
+package cn.mycloudedu.controller
+
+import javax.validation.Valid
+
+import cn.mycloudedu.framework.core.result.TotalResult
+import cn.mycloudedu.shiro.ShiroUtil
+import cn.mycloudedu.user.dto.UserInfo
+import cn.mycloudedu.user.param.{SchoolAuthenticationParam, UserInfoParam}
+import cn.mycloudedu.user.service.UserService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Controller
+import org.springframework.util.Assert
+import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, RequestParam, ResponseBody}
+import java.util.{List => JavaList, Map => JavaMap}
+
+/**
+  * Created by e诺
+  * on 2017/3/30
+  * Time 下午6:19
+  */
+@Controller
+@RequestMapping(Array("user"))
+class UserController extends BaseController {
+  @Autowired private val userService: UserService = null
+
+  /**
+    * 获取注册验证码
+    *
+    * @param mobile
+    * @return
+    */
+  @RequestMapping(value = Array("code/register/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getRegisterValidateCode(@RequestParam("mobile") mobile: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    userService.getValidateCode(mobile, "register")
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 用户注册 验证验 证码
+    *
+    * @param mobile
+    * @param code
+    * @return
+    */
+  @RequestMapping(value = Array("code/register/check"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def checkRegisterValidateCode(@RequestParam("mobile") mobile: String, @RequestParam("code") code: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    Assert.notNull(code, "code:验证码不能为空")
+    val result: Boolean = userService.checkRegisterValidateCode(mobile, code)
+    TotalResult.newInstance(result)
+  }
+
+  /**
+    * 用户注册
+    *
+    * @param mobile
+    * @param password
+    * @return
+    */
+  @RequestMapping(value = Array("register"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def userRegister(@RequestParam("mobile") mobile: String, @RequestParam("password") password: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    Assert.notNull(password, "password:密码不能为空")
+    userService.userRegister(mobile, password)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 获取忘记密码验证码
+    *
+    * @param mobile
+    * @return
+    */
+  @RequestMapping(value = Array("code/forget/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getForgetValidateCode(@RequestParam("mobile") mobile: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    userService.getValidateCode(mobile, "forget")
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 忘记密码验证码 验证
+    *
+    * @param mobile
+    * @param code
+    * @return
+    */
+  @RequestMapping(value = Array("code/forget/check"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def checkForgetValidateCode(@RequestParam("mobile") mobile: String, @RequestParam("code") code: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    Assert.notNull(code, "code:验证码不能为空")
+    val result: Boolean = userService.checkValidateCode(mobile, "forget", code)
+    result match {
+      case true => TotalResult.newInstance(userService.cacheUuid)
+      case false => TotalResult.newInstance(result)
+    }
+  }
+
+  /**
+    * 重置密码
+    *
+    * @param password
+    * @return
+    */
+  @RequestMapping(value = Array("password/reset"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def resetPassword(@RequestParam("mobile") mobile: String, @RequestParam("uuid") uuid: String,
+                                  @RequestParam("password") password: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    Assert.notNull(uuid, "uuid:uuid不能为空")
+    Assert.notNull(password, "password:密码不能为空")
+    val result = userService.checkUuid(uuid)
+    result match {
+      case true => userService.resetPassword(mobile, password)
+      case false =>
+    }
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 修改密码 获取验证码
+    *
+    * @param mobile
+    * @return
+    */
+  @RequestMapping(value = Array("code/modify/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getModifyValidateCode(@RequestParam("mobile") mobile: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    if (userService.isUserSelfMobile(ShiroUtil.getUserId, mobile))
+      userService.getValidateCode(mobile, "modify")
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 修改密码 验证码验证
+    *
+    * @param mobile
+    * @param code
+    * @return
+    */
+  @RequestMapping(value = Array("code/modify/check"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def checkModifyValidateCode(@RequestParam("mobile") mobile: String, @RequestParam("code") code: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    Assert.notNull(code, "code:验证码不能为空")
+    val result: Boolean = userService.checkValidateCode(mobile, "modify", code)
+    TotalResult.newInstance(result)
+  }
+
+  /**
+    * 修改密码
+    *
+    * @param password
+    * @return
+    */
+  @RequestMapping(value = Array("password/modify"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def modifyPassword(@RequestParam("password") password: String): AnyRef = {
+    Assert.notNull(password, "password:密码不能为空")
+    val userId = ShiroUtil.getUserId
+    userService.modifyPassword(userId, password)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 密码验证
+    *
+    * @param password
+    * @return
+    */
+  @RequestMapping(value = Array("password/verify"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def verifyPassword(@RequestParam("password") password: String): AnyRef = {
+    Assert.notNull(password, "password:密码不能为空")
+    val userId = ShiroUtil.getUserId
+    val result: Boolean = userService.verifyPassword(userId, password)
+    TotalResult.newInstance(result)
+  }
+
+  /**
+    * 更换手机号 获取验证码
+    *
+    * @param mobile
+    * @return
+    */
+  @RequestMapping(value = Array("code/bind/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getBindValidateCode(@RequestParam("mobile") mobile: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    val userId = ShiroUtil.getUserId
+    val result: Boolean = userService.getBindValidateCode(userId, mobile)
+    TotalResult.newInstance(result)
+  }
+
+  /**
+    * 更换手机号 验证验证码
+    *
+    * @param mobile
+    * @param code
+    * @return
+    */
+  @RequestMapping(value = Array("code/bind/check"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def checkBindValidateCode(@RequestParam("mobile") mobile: String, @RequestParam("code") code: String): AnyRef = {
+    Assert.notNull(mobile, "mobile:手机号不能为空")
+    Assert.notNull(code, "code:验证码不能为空")
+    userService.checkBindValidateCode(ShiroUtil.getUserId, mobile, code)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 编辑时 获取区域信息-(eg:浙江省-杭州市)
+    *
+    * @param parentId
+    * @return
+    */
+  @RequestMapping(value = Array("area/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getArea(@RequestParam("parentId") parentId: Int): AnyRef = {
+    Assert.notNull(parentId, "parentId:不能为空")
+    val area: JavaList[JavaMap[Int, String]] = userService.getArea(parentId)
+    TotalResult.newInstance(area)
+  }
+
+  /**
+    * 获取所有的省以及省所对应的市
+    *
+    * @return
+    */
+  @RequestMapping(value = Array("allarea/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getAllArea(): AnyRef = {
+    val allArea = userService.getAllArea()
+    TotalResult.newInstance(allArea)
+  }
+
+  /**
+    * 保存用户信息
+    *
+    * @param param
+    * @return
+    */
+  @RequestMapping(value = Array("info/save"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def saveUserInfo(@Valid param: UserInfoParam, @RequestParam("birthday") birthday: Long): AnyRef = {
+    Assert.notNull(birthday, "birthday:不能为空")
+    userService.saveUserInfo(ShiroUtil.getUserId, param, birthday)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 获取用户信息
+    *
+    * @return
+    */
+  @RequestMapping(value = Array("info/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getUserInfo(): AnyRef = {
+    val userInfo: UserInfo = userService.getUserInfo(ShiroUtil.getUserId)
+    TotalResult.newInstance(userInfo)
+  }
+
+  /**
+    * 获取院校
+    *
+    * @param search
+    * @return
+    */
+  @RequestMapping(value = Array("college/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getCollege(@RequestParam(value = "search", required = false) search: String): AnyRef = {
+    val college: JavaList[JavaMap[Int, String]] = userService.getCollege(search)
+    TotalResult.newInstance(college)
+  }
+
+  /**
+    * 学籍认证
+    *
+    * @param param
+    * @return
+    */
+  @RequestMapping(value = Array("school/authenticate"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def authenticateSchool(@Valid param: SchoolAuthenticationParam): AnyRef = {
+    val result: Boolean = userService.authenticateSchool(ShiroUtil.getUserId, param)
+    TotalResult.newInstance(result)
+  }
+
+  /**
+    * 学籍认证通过后的信息
+    *
+    * @return
+    */
+  @RequestMapping(value = Array("school/authenticate/success"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def schoolAuthenticateSuccess(): AnyRef = {
+    val schoolAuthenticateInfo = userService.schoolAuthenticateSuccess(ShiroUtil.getUserId)
+    TotalResult.newInstance(schoolAuthenticateInfo)
+  }
+}

@@ -1,0 +1,28 @@
+package service
+
+import cn.mycloudedu.framework.core.utils.JsonBinder
+import cn.mycloudedu.user.service.ResumeService
+import org.apache.log4j.Logger
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+
+/**
+  * Created by e诺
+  * on 2017/4/20
+  * Time 下午2:45
+  */
+@RunWith(classOf[SpringJUnit4ClassRunner])
+@ContextConfiguration(Array("/spring-context.xml"))
+class ResumeServiceTest {
+  private val log = Logger.getLogger(this.getClass)
+  @Autowired val resumeService: ResumeService = null
+
+  @Test def getAvatarTest: Unit = {
+    log.info(JsonBinder.toNormalJson(resumeService.getAvatar(11)))
+  }
+
+
+}

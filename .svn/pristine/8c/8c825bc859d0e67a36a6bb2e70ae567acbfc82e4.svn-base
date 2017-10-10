@@ -1,0 +1,80 @@
+package cn.mycloudedu.user.service
+
+import cn.mycloudedu.framework.core.result.{PageOrder, PageResult}
+import cn.mycloudedu.user.biz.PracticeBiz
+import cn.mycloudedu.user.dto._
+import cn.mycloudedu.user.param.{ReplyCommentParam, WriteCommentParam, WriteLogParam}
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import java.util.{List => JavaList}
+
+/**
+  * Created by e诺
+  * on 2017/4/17
+  * Time 下午2:25
+  */
+@Service("practiceService")
+class PracticeServiceImpl extends PracticeService {
+  @Autowired val practiceBiz: PracticeBiz = null
+
+  override def getPracticePlanList(userId: Int, pageOrder: PageOrder): PageResult[PracticePlanDTO] = {
+    pageOrder.setDefaultPropertyDirection("createTime", "desc")
+    practiceBiz.getPracticePlanList(userId, pageOrder)
+  }
+
+  override def getEditLogPlanList(userId: Int): JavaList[EditLogPlanDTO] = {
+    practiceBiz.getEditLogPlanList(userId)
+  }
+
+  override def getPracticePlanDetails(userId: Int, projectId: Int): PracticePlanDetailsDTO = {
+    val details = practiceBiz.getPracticePlanDetails(userId, projectId)
+    details
+  }
+
+  override def writeLog(userId: Int, param: WriteLogParam, create: Boolean): Unit = {
+    practiceBiz.writeLog(userId, param, create)
+  }
+
+  override def getDraftsLogList(userId: Int, pageOrder: PageOrder): PageResult[DraftsLogDTO] = {
+    pageOrder.setDefaultPropertyDirection("createTime", "desc")
+    practiceBiz.getDraftsLogList(userId, pageOrder)
+  }
+
+  override def getEditLog(dailyId: Int): EditLogDTO = {
+    practiceBiz.getEditLog(dailyId)
+  }
+
+  override def deleteDraftsLog(dailyId: Int): Unit = {
+    practiceBiz.deleteDraftsLog(dailyId)
+  }
+
+  override def getMyLogList(userId: Int, pageOrder: PageOrder): PageResult[MyLogDTO] = {
+    pageOrder.setDefaultPropertyDirection("publishTime", "desc")
+    practiceBiz.getMyLogList(userId, pageOrder)
+  }
+
+  override def getLogDetails(userId: Int, dailyId: Int): MyLogDTO = {
+    practiceBiz.getLogDetails(userId, dailyId)
+  }
+
+  override def getLogComment(dailyId: Int): JavaList[CommentDTO] = {
+    practiceBiz.getLogComment(dailyId)
+  }
+
+  override def writeComment(userId: Int, param: WriteCommentParam): Unit = {
+    practiceBiz.writeComment(userId, param)
+  }
+
+  override def replyComment(userId: Int, param: ReplyCommentParam): Unit = {
+    practiceBiz.replyComment(userId, param)
+  }
+
+  override def deleteComment(commentId: Int): Boolean = {
+    practiceBiz.deleteComment(commentId)
+  }
+
+  override def isSelfComment(commentId: Int, userId: Int): Boolean = {
+    practiceBiz.isSelfComment(commentId, userId)
+  }
+
+}

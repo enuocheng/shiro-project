@@ -1,0 +1,42 @@
+package cn.mycloudedu.user.service
+
+import java.util.{List => JavaList}
+
+import cn.mycloudedu.framework.core.result.{PageOrder, PageResult}
+import cn.mycloudedu.user.dto._
+import cn.mycloudedu.user.param.{ReplyCommentParam, WriteCommentParam, WriteLogParam}
+
+/**
+  * Created by e诺
+  * on 2017/4/17
+  * Time 下午2:25
+  */
+trait PracticeService {
+  def getPracticePlanList(userId: Int, pageOrder: PageOrder): PageResult[PracticePlanDTO]
+
+  def getEditLogPlanList(userId: Int): JavaList[EditLogPlanDTO]
+
+  def getPracticePlanDetails(userId: Int, projectId: Int): PracticePlanDetailsDTO
+
+  def writeLog(userId: Int, param: WriteLogParam, create: Boolean): Unit
+
+  def getDraftsLogList(userId: Int, pageOrder: PageOrder): PageResult[DraftsLogDTO]
+
+  def getEditLog(dailyId: Int): EditLogDTO
+
+  def deleteDraftsLog(dailyId: Int): Unit
+
+  def getMyLogList(userId: Int, pageOrder: PageOrder): PageResult[MyLogDTO]
+
+  def getLogDetails(userId: Int, dailyId: Int): MyLogDTO
+
+  def getLogComment(dailyId: Int): JavaList[CommentDTO]
+
+  def writeComment(userId: Int, param: WriteCommentParam): Unit
+
+  def replyComment(userId: Int, param: ReplyCommentParam): Unit
+
+  def deleteComment(commentId: Int): Boolean
+
+  def isSelfComment(commentId: Int, userId: Int): Boolean
+}

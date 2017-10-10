@@ -1,0 +1,46 @@
+package cn.mycloudedu.user.service
+
+import cn.mycloudedu.user.biz.ResumeBiz
+import cn.mycloudedu.user.dto.ResumeBaseDTO
+import cn.mycloudedu.user.param.ResumeBaseInfoParam
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import java.util.{List => JavaList, Map => JavaHashMap}
+
+/**
+  * Created by e诺
+  * on 2017/5/4
+  * Time 上午8:50
+  */
+@Service("resumeService")
+class ResumeServiceImpl extends ResumeService {
+  @Autowired private val resumeBiz: ResumeBiz = null
+
+  override def getAvatar(userId: Int): String = {
+    resumeBiz.getAvatar(userId)
+  }
+
+  override def setAvatar(userId: Int, avatar: String): Unit = {
+    resumeBiz.setAvatar(userId, avatar)
+  }
+
+  override def setResumeBaseInfo(userId: Int, param: ResumeBaseInfoParam): Unit = {
+    resumeBiz.setResumeBaseInfo(userId, param)
+  }
+
+  override def getResumeBaseInfo(userId: Int): ResumeBaseDTO = {
+    resumeBiz.getResumeBaseInfo(userId)
+  }
+
+  override def setPersonalAdvantage(userId: Int, advantage: String): Unit = {
+    resumeBiz.setPersonalAdvantage(userId, advantage)
+  }
+
+  override def getPersonalAdvantage(userId: Int): String = {
+    resumeBiz.getPersonalAdvantage(userId)
+  }
+
+  override def getPositionType(parentId: Int): JavaList[JavaHashMap[String, Any]] = {
+    resumeBiz.getPositionType(parentId)
+  }
+}

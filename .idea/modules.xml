@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/jianqiao-app/jianqiao-app.iml" filepath="$PROJECT_DIR$/jianqiao-app/jianqiao-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-common-core/mycloudedu-common-core.iml" filepath="$PROJECT_DIR$/mycloudedu-common-core/mycloudedu-common-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-common-web/mycloudedu-common-web.iml" filepath="$PROJECT_DIR$/mycloudedu-common-web/mycloudedu-common-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-facade-sms/mycloudedu-facade-sms.iml" filepath="$PROJECT_DIR$/mycloudedu-facade-sms/mycloudedu-facade-sms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-facade-user/mycloudedu-facade-user.iml" filepath="$PROJECT_DIR$/mycloudedu-facade-user/mycloudedu-facade-user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-parent.iml" filepath="$PROJECT_DIR$/mycloudedu-parent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-service-sms/mycloudedu-service-sms.iml" filepath="$PROJECT_DIR$/mycloudedu-service-sms/mycloudedu-service-sms.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mycloudedu-service-user/mycloudedu-service-user.iml" filepath="$PROJECT_DIR$/mycloudedu-service-user/mycloudedu-service-user.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.ResumeEducationMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.ResumeEducation" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="resume_id" property="resumeId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="BIGINT" />
+    <result column="end_time" property="endTime" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="education" property="education" jdbcType="INTEGER" />
+    <result column="profession" property="profession" jdbcType="VARCHAR" />
+    <result column="major" property="major" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResumeEducationResultMap" type="cn.mycloudedu.user.dto.ResumeEducationDTO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="BIGINT" />
+    <result column="end_time" property="endTime" jdbcType="BIGINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="education" property="education" jdbcType="INTEGER" />
+    <result column="profession" property="profession" jdbcType="VARCHAR" />
+    <result column="major" property="major" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, resume_id, user_id, start_time, end_time, name, education, profession, major
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from resume_education
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from resume_education
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.ResumeEducation" >
+    insert into resume_education (id, resume_id, user_id, 
+      start_time, end_time, name, 
+      education, profession, major
+      )
+    values (#{id,jdbcType=INTEGER}, #{resumeId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{startTime,jdbcType=BIGINT}, #{endTime,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
+      #{education,jdbcType=INTEGER}, #{profession,jdbcType=VARCHAR}, #{major,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.ResumeEducation" >
+    insert into resume_education
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="resumeId != null" >
+        resume_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="startTime != 0" >
+        start_time,
+      </if>
+      <if test="endTime != 0" >
+        end_time,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="education != null" >
+        education,
+      </if>
+      <if test="profession != null" >
+        profession,
+      </if>
+      <if test="major != null" >
+        major,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="resumeId != null" >
+        #{resumeId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != 0" >
+        #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != 0" >
+        #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        #{education,jdbcType=INTEGER},
+      </if>
+      <if test="profession != null" >
+        #{profession,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null" >
+        #{major,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.ResumeEducation" >
+    update resume_education
+    <set >
+      <if test="resumeId != null" >
+        resume_id = #{resumeId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != 0" >
+        start_time = #{startTime,jdbcType=BIGINT},
+      </if>
+      <if test="endTime != 0" >
+        end_time = #{endTime,jdbcType=BIGINT},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="education != null" >
+        education = #{education,jdbcType=INTEGER},
+      </if>
+      <if test="profession != null" >
+        profession = #{profession,jdbcType=VARCHAR},
+      </if>
+      <if test="major != null" >
+        major = #{major,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.ResumeEducation" >
+    update resume_education
+    set resume_id = #{resumeId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=BIGINT},
+      end_time = #{endTime,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      education = #{education,jdbcType=INTEGER},
+      profession = #{profession,jdbcType=VARCHAR},
+      major = #{major,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getResumeEducation" resultMap="ResumeEducationResultMap">
+    SELECT id,start_time,end_time,name,education,profession,major
+    FROM resume_education
+    WHERE id=#{educationId,jdbcType=INTEGER}
+  </select>
+  <select id="getResumeEducationList" resultMap="ResumeEducationResultMap">
+    SELECT id,start_time,end_time,name,education,profession,major
+    FROM resume_education
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

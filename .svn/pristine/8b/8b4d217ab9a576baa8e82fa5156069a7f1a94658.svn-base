@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="jianqiao-app" />
+        <module name="mycloudedu-common-core" />
+        <module name="mycloudedu-common-web" />
+        <module name="mycloudedu-facade-sms" />
+        <module name="mycloudedu-facade-user" />
+        <module name="mycloudedu-service-sms" />
+        <module name="mycloudedu-service-user" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="jianqiao-app" target="1.7" />
+      <module name="mycloudedu-common-core" target="1.7" />
+      <module name="mycloudedu-common-web" target="1.7" />
+      <module name="mycloudedu-facade-sms" target="1.7" />
+      <module name="mycloudedu-facade-user" target="1.7" />
+      <module name="mycloudedu-parent" target="1.5" />
+      <module name="mycloudedu-service-sms" target="1.7" />
+      <module name="mycloudedu-service-user" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

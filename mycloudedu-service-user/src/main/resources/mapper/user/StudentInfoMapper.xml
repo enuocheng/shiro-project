@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.StudentInfoMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.StudentInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="department_id" property="departmentId" jdbcType="INTEGER" />
+    <result column="class_id" property="classId" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+    <result column="verified" property="verified" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="verified_time" property="verifiedTime" jdbcType="BIGINT" />
+    <result column="college_id" property="collegeId" jdbcType="INTEGER" />
+    <result column="teacher_id" property="teacherId" jdbcType="INTEGER" />
+    <result column="department_name" property="departmentName" jdbcType="VARCHAR" />
+    <result column="college_name" property="collegeName" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="SchoolAuthenticateSuccessResultMap" type="cn.mycloudedu.user.dto.SchoolAuthenticateSuccessDTO">
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="number" property="number" jdbcType="VARCHAR" />
+    <result column="college_name" property="collegeName" jdbcType="VARCHAR" />
+    <result column="grade" property="grade" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, number, department_id, class_id, user_id, grade, verified, create_time, 
+    verified_time, college_id, teacher_id, department_name, college_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from student_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from student_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.mycloudedu.user.domain.StudentInfo" >
+    insert into student_info (id, name, number, 
+      department_id, class_id, user_id, 
+      grade, verified, create_time, 
+      verified_time, college_id, teacher_id, 
+      department_name, college_name)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{number,jdbcType=VARCHAR}, 
+      #{departmentId,jdbcType=INTEGER}, #{classId,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, 
+      #{grade,jdbcType=INTEGER}, #{verified,jdbcType=BIT}, #{createTime,jdbcType=BIGINT}, 
+      #{verifiedTime,jdbcType=BIGINT}, #{collegeId,jdbcType=INTEGER}, #{teacherId,jdbcType=INTEGER}, 
+      #{departmentName,jdbcType=VARCHAR}, #{collegeName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.mycloudedu.user.domain.StudentInfo" >
+    insert into student_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="number != null" >
+        number,
+      </if>
+      <if test="departmentId != null" >
+        department_id,
+      </if>
+      <if test="classId != null" >
+        class_id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="grade != null" >
+        grade,
+      </if>
+      <if test="verified != null" >
+        verified,
+      </if>
+      <if test="createTime != 0" >
+        create_time,
+      </if>
+      <if test="verifiedTime != 0" >
+        verified_time,
+      </if>
+      <if test="collegeId != null" >
+        college_id,
+      </if>
+      <if test="teacherId != null" >
+        teacher_id,
+      </if>
+      <if test="departmentName != null" >
+        department_name,
+      </if>
+      <if test="collegeName != null" >
+        college_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null" >
+        #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="verified != null" >
+        #{verified,jdbcType=BIT},
+      </if>
+      <if test="createTime != 0" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="verifiedTime != 0" >
+        #{verifiedTime,jdbcType=BIGINT},
+      </if>
+      <if test="collegeId != null" >
+        #{collegeId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="departmentName != null" >
+        #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeName != null" >
+        #{collegeName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.StudentInfo" >
+    update student_info
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="number != null" >
+        number = #{number,jdbcType=VARCHAR},
+      </if>
+      <if test="departmentId != null" >
+        department_id = #{departmentId,jdbcType=INTEGER},
+      </if>
+      <if test="classId != null" >
+        class_id = #{classId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="grade != null" >
+        grade = #{grade,jdbcType=INTEGER},
+      </if>
+      <if test="verified != null" >
+        verified = #{verified,jdbcType=BIT},
+      </if>
+      <if test="createTime != 0" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="verifiedTime != 0" >
+        verified_time = #{verifiedTime,jdbcType=BIGINT},
+      </if>
+      <if test="collegeId != null" >
+        college_id = #{collegeId,jdbcType=INTEGER},
+      </if>
+      <if test="teacherId != null" >
+        teacher_id = #{teacherId,jdbcType=INTEGER},
+      </if>
+      <if test="departmentName != null" >
+        department_name = #{departmentName,jdbcType=VARCHAR},
+      </if>
+      <if test="collegeName != null" >
+        college_name = #{collegeName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.StudentInfo" >
+    update student_info
+    set name = #{name,jdbcType=VARCHAR},
+      number = #{number,jdbcType=VARCHAR},
+      department_id = #{departmentId,jdbcType=INTEGER},
+      class_id = #{classId,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      grade = #{grade,jdbcType=INTEGER},
+      verified = #{verified,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=BIGINT},
+      verified_time = #{verifiedTime,jdbcType=BIGINT},
+      college_id = #{collegeId,jdbcType=INTEGER},
+      teacher_id = #{teacherId,jdbcType=INTEGER},
+      department_name = #{departmentName,jdbcType=VARCHAR},
+      college_name = #{collegeName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getStudentInfoByIds" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM student_info
+    WHERE college_id=#{collegeId,jdbcType=INTEGER} AND user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="getStudentInfoByUserId" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM student_info
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="schoolAuthenticateSuccess" resultMap="SchoolAuthenticateSuccessResultMap">
+    SELECT si.name,si.number,si.college_name,si.grade
+    FROM student_info si
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

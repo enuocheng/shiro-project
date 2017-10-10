@@ -1,0 +1,86 @@
+package cn.mycloudedu.user.service
+
+import cn.mycloudedu.user.biz.ResumeBiz
+import cn.mycloudedu.user.dto.{ResumeBaseDTO, ResumeExperienceDTO}
+import cn.mycloudedu.user.param.{JobIntentionParam, ResumeBaseInfoParam, ResumeExperienceParam}
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+import java.util.{List => JavaList, Map => JavaHashMap}
+
+import org.springframework.transaction.annotation.Transactional
+
+/**
+  * Created by e诺
+  * on 2017/5/4
+  * Time 上午8:50
+  */
+@Service("resumeService")
+class ResumeServiceImpl extends ResumeService {
+  @Autowired private val resumeBiz: ResumeBiz = null
+
+  override def getAvatar(userId: Int): String = {
+    resumeBiz.getAvatar(userId)
+  }
+
+  override def setAvatar(userId: Int, avatar: String): Unit = {
+    resumeBiz.setAvatar(userId, avatar)
+  }
+
+  override def setResumeBaseInfo(userId: Int, param: ResumeBaseInfoParam): Unit = {
+    resumeBiz.setResumeBaseInfo(userId, param)
+  }
+
+  override def getResumeBaseInfo(userId: Int): ResumeBaseDTO = {
+    resumeBiz.getResumeBaseInfo(userId)
+  }
+
+  override def setPersonalAdvantage(userId: Int, advantage: String): Unit = {
+    resumeBiz.setPersonalAdvantage(userId, advantage)
+  }
+
+  override def getPersonalAdvantage(userId: Int): String = {
+    resumeBiz.getPersonalAdvantage(userId)
+  }
+
+  override def getPositionType(parentId: Int): JavaList[JavaHashMap[String, Any]] = {
+    resumeBiz.getPositionType(parentId)
+  }
+
+  override def getResumePositionType(userId: Int): JavaList[JavaHashMap[String, Any]] = {
+    resumeBiz.getResumePositionType(userId)
+  }
+
+  override def getJobIntention(userId: Int): JavaHashMap[String, Any] = {
+    resumeBiz.getJobIntention(userId)
+  }
+
+  @Transactional
+  override def setJobIntention(userId: Int, param: JobIntentionParam): Unit = {
+    resumeBiz.setJobIntention(userId, param)
+  }
+
+  override def getResumeArea(userId: Int): JavaList[JavaHashMap[String, Any]] = {
+    resumeBiz.getResumeArea(userId)
+  }
+
+  override def getResumeExperienceList(userId: Int, status: Int): JavaList[ResumeExperienceDTO] = {
+    resumeBiz.getResumeExperienceList(userId, status)
+  }
+
+  override def getResumeExperience(experienceId: Int): ResumeExperienceDTO = {
+    resumeBiz.getResumeExperience(experienceId)
+  }
+
+  @Transactional
+  override def setResumeExperience(userId: Int, param: ResumeExperienceParam, status: Int): Unit = {
+    resumeBiz.setResumeExperience(userId, param, status)
+  }
+
+  override def updateResumeExperience(experienceId: Int, param: ResumeExperienceParam): Unit = {
+    resumeBiz.updateResumeExperience(experienceId, param)
+  }
+
+  override def deleteResumeExperience(userId: Int, experienceId: Int, status: Int): Unit = {
+    resumeBiz.deleteResumeExperience(userId, experienceId, status)
+  }
+}

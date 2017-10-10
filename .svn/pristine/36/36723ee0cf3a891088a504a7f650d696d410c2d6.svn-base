@@ -1,0 +1,6 @@
+﻿#user property
+
+#测试开发 "d07b04a5768c49e29681a6d9cb8e680b";
+#线上 "e71ca49602d10acae477c67bd0bc1a6fe19";
+user.salt=d07b04a5768c49e29681a6d9cb8e680b
+nickname.prefix=jq

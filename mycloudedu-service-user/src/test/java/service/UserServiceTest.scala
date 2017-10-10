@@ -1,0 +1,99 @@
+package service
+
+import java.util.{Map => JavaMap, List => JavaList}
+
+import cn.mycloudedu.framework.core.utils.JsonBinder
+import cn.mycloudedu.user.param.SchoolAuthenticationParam
+import cn.mycloudedu.user.service.UserService
+import org.apache.log4j.Logger
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
+
+/**
+  * Created by e诺
+  * on 2017/3/31
+  * Time 上午11:08
+  */
+@RunWith(classOf[SpringJUnit4ClassRunner])
+@ContextConfiguration(Array("/spring-context.xml"))
+class UserServiceTest {
+  private val log: Logger = Logger.getLogger(this.getClass)
+  @Autowired private val userService: UserService = null
+
+  @Test def getUserByUsername {
+    log.info(JsonBinder.toNormalJson(userService.getLoginUser("15757115806")))
+  }
+
+  @Test def resetPasswordTest: Unit = {
+    //    userService.resetPassword(11, "123456")
+  }
+
+  @Test def verifyPasswordTest: Unit = {
+    val result: Boolean = userService.verifyPassword(11, "1234567")
+    log.info(JsonBinder.toNormalJson(result))
+  }
+
+  @Test def getAreaTest: Unit = {
+    val area: JavaList[JavaMap[Int, String]] = userService.getArea(11)
+    log.info(JsonBinder.toNormalJson(area))
+  }
+
+  @Test def getUserInfoTest: Unit = {
+    log.info(JsonBinder.toNormalJson(userService.getUserInfo(15)))
+  }
+
+  @Test def getAreaByLevelTest: Unit = {
+    log.info(JsonBinder.toNormalJson(userService.getAreaByLevel(11, 175, 23)))
+  }
+
+  @Test def getCollegeTest: Unit = {
+    val college: JavaList[JavaMap[Int, String]] = userService.getCollege(null)
+    log.info(JsonBinder.toNormalJson(college.size()))
+    log.info(JsonBinder.toNormalJson(college))
+  }
+
+  @Test def authenticateSchoolTest: Unit = {
+    val param = new SchoolAuthenticationParam
+    param.setCollegeId(881)
+    param.setCollegeName("浙江大学")
+    param.setGrade(2013)
+    param.setNumber("131050021")
+    param.setName("程铭忠")
+
+    log.info(JsonBinder.toNormalJson(userService.authenticateSchool(11, param)))
+  }
+
+  @Test def getValidateCode: Unit = {
+    val mobile = "13732256763"
+    log.info(JsonBinder.toNormalJson(userService.getValidateCode(mobile, "forget")))
+  }
+
+  @Test def checkForgetValidateCode: Unit = {
+    val mobile = "13732256763"
+    val template = "forget"
+    val code = "544468"
+    userService.checkValidateCode(mobile, template, code)
+    log.info(JsonBinder.toNormalJson(userService.cacheUuid))
+  }
+
+  @Test def checkUuidTest: Unit = {
+    val uuid = "72ab7918-c6b2-4bb2-bfa2-0015014d68b3"
+    userService.checkUuid(uuid)
+  }
+
+  @Test def getCollegeMapIdTest: Unit = {
+    log.info(JsonBinder.toNormalJson(userService.getCollegeMapId()))
+    log.info(JsonBinder.toNormalJson(userService.getCollegeMapId().size()))
+  }
+
+  @Test def schoolAuthenticateSuccessTest: Unit = {
+    log.info(JsonBinder.toNormalJson(userService.schoolAuthenticateSuccess(10)))
+  }
+
+  @Test def getAllAreaTest: Unit = {
+    log.info(JsonBinder.toNormalJson(userService.getAllArea()))
+  }
+}

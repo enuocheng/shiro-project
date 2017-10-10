@@ -1,0 +1,536 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.mycloudedu.user.dao.ResumeMapper" >
+  <resultMap id="BaseResultMap" type="cn.mycloudedu.user.domain.Resume" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="birthday" property="birthday" jdbcType="BIGINT" />
+    <result column="education" property="education" jdbcType="INTEGER" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="province_id" property="provinceId" jdbcType="INTEGER" />
+    <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="advantage" property="advantage" jdbcType="VARCHAR" />
+    <result column="min_salary" property="minSalary" jdbcType="INTEGER" />
+    <result column="max_salary" property="maxSalary" jdbcType="INTEGER" />
+    <result column="time" property="time" jdbcType="INTEGER" />
+    <result column="property" property="property" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+    <result column="base_percent" property="basePercent" jdbcType="INTEGER" />
+    <result column="advantage_percent" property="advantagePercent" jdbcType="INTEGER" />
+    <result column="expect_percent" property="expectPercent" jdbcType="INTEGER" />
+    <result column="internship_percent" property="internshipPercent" jdbcType="INTEGER" />
+    <result column="project_percent" property="projectPercent" jdbcType="INTEGER" />
+    <result column="education_percent" property="educationPercent" jdbcType="INTEGER" />
+    <result column="sample_percent" property="samplePercent" jdbcType="INTEGER" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="sample_name" property="sampleName" jdbcType="VARCHAR" />
+    <result column="sample_file_name" property="sampleFileName" jdbcType="VARCHAR" />
+    <result column="sample_file_url" property="sampleFileUrl" jdbcType="VARCHAR" />
+    <result column="sample_description" property="sampleDescription" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResumeBaseResultMap" type="cn.mycloudedu.user.dto.ResumeBaseDTO">
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="avatar" property="avatar" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sex" property="sex" jdbcType="INTEGER" />
+    <result column="base_percent" property="basePercent" jdbcType="INTEGER" />
+    <result column="birthday" property="birthday" jdbcType="BIGINT" />
+    <result column="education" property="education" jdbcType="INTEGER" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="province_id" property="provinceId" jdbcType="INTEGER" />
+    <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+    <result column="city_id" property="cityId" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="advantage" property="advantage" jdbcType="VARCHAR" />
+    <result column="expect_percent" property="expectPercent" jdbcType="INTEGER" />
+    <result column="internship_percent" property="internshipPercent" jdbcType="INTEGER" />
+    <result column="project_percent" property="projectPercent" jdbcType="INTEGER" />
+    <result column="education_percent" property="educationPercent" jdbcType="INTEGER" />
+    <result column="sample_percent" property="samplePercent" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, user_id, name, sex, birthday, education, mobile, email, province_id, province_name, 
+    city_id, city_name, advantage, min_salary, max_salary, time, property, create_time, 
+    update_time, base_percent, advantage_percent, expect_percent, internship_percent, 
+    project_percent, education_percent, sample_percent, avatar, sample_name, sample_file_name, 
+    sample_file_url, sample_description
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from resume
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from resume
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="cn.mycloudedu.user.domain.Resume" >
+    insert into resume (id, user_id, name, 
+      sex, birthday, education, 
+      mobile, email, province_id, 
+      province_name, city_id, city_name, 
+      advantage, min_salary, max_salary, 
+      time, property, create_time, 
+      update_time, base_percent, advantage_percent, 
+      expect_percent, internship_percent, project_percent, 
+      education_percent, sample_percent, avatar, 
+      sample_name, sample_file_name, sample_file_url, 
+      sample_description)
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{sex,jdbcType=INTEGER}, #{birthday,jdbcType=BIGINT}, #{education,jdbcType=INTEGER}, 
+      #{mobile,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{provinceId,jdbcType=INTEGER}, 
+      #{provinceName,jdbcType=VARCHAR}, #{cityId,jdbcType=INTEGER}, #{cityName,jdbcType=VARCHAR}, 
+      #{advantage,jdbcType=VARCHAR}, #{minSalary,jdbcType=INTEGER}, #{maxSalary,jdbcType=INTEGER}, 
+      #{time,jdbcType=INTEGER}, #{property,jdbcType=INTEGER}, #{createTime,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=BIGINT}, #{basePercent,jdbcType=INTEGER}, #{advantagePercent,jdbcType=INTEGER}, 
+      #{expectPercent,jdbcType=INTEGER}, #{internshipPercent,jdbcType=INTEGER}, #{projectPercent,jdbcType=INTEGER}, 
+      #{educationPercent,jdbcType=INTEGER}, #{samplePercent,jdbcType=INTEGER}, #{avatar,jdbcType=VARCHAR}, 
+      #{sampleName,jdbcType=VARCHAR}, #{sampleFileName,jdbcType=VARCHAR}, #{sampleFileUrl,jdbcType=VARCHAR}, 
+      #{sampleDescription,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" useGeneratedKeys="true" keyProperty="id" parameterType="cn.mycloudedu.user.domain.Resume" >
+    insert into resume
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="sex != null" >
+        sex,
+      </if>
+      <if test="birthday != 0" >
+        birthday,
+      </if>
+      <if test="education != null" >
+        education,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="provinceId != null" >
+        province_id,
+      </if>
+      <if test="provinceName != null" >
+        province_name,
+      </if>
+      <if test="cityId != null" >
+        city_id,
+      </if>
+      <if test="cityName != null" >
+        city_name,
+      </if>
+      <if test="advantage != null" >
+        advantage,
+      </if>
+      <if test="minSalary != null" >
+        min_salary,
+      </if>
+      <if test="maxSalary != null" >
+        max_salary,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="property != null" >
+        property,
+      </if>
+      <if test="createTime != 0" >
+        create_time,
+      </if>
+      <if test="updateTime != 0" >
+        update_time,
+      </if>
+      <if test="basePercent != null" >
+        base_percent,
+      </if>
+      <if test="advantagePercent != null" >
+        advantage_percent,
+      </if>
+      <if test="expectPercent != null" >
+        expect_percent,
+      </if>
+      <if test="internshipPercent != null" >
+        internship_percent,
+      </if>
+      <if test="projectPercent != null" >
+        project_percent,
+      </if>
+      <if test="educationPercent != null" >
+        education_percent,
+      </if>
+      <if test="samplePercent != null" >
+        sample_percent,
+      </if>
+      <if test="avatar != null" >
+        avatar,
+      </if>
+      <if test="sampleName != null" >
+        sample_name,
+      </if>
+      <if test="sampleFileName != null" >
+        sample_file_name,
+      </if>
+      <if test="sampleFileUrl != null" >
+        sample_file_url,
+      </if>
+      <if test="sampleDescription != null" >
+        sample_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != 0" >
+        #{birthday,jdbcType=BIGINT},
+      </if>
+      <if test="education != null" >
+        #{education,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="provinceName != null" >
+        #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null" >
+        #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="cityName != null" >
+        #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="advantage != null" >
+        #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="minSalary != null" >
+        #{minSalary,jdbcType=INTEGER},
+      </if>
+      <if test="maxSalary != null" >
+        #{maxSalary,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=INTEGER},
+      </if>
+      <if test="property != null" >
+        #{property,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="basePercent != null" >
+        #{basePercent,jdbcType=INTEGER},
+      </if>
+      <if test="advantagePercent != null" >
+        #{advantagePercent,jdbcType=INTEGER},
+      </if>
+      <if test="expectPercent != null" >
+        #{expectPercent,jdbcType=INTEGER},
+      </if>
+      <if test="internshipPercent != null" >
+        #{internshipPercent,jdbcType=INTEGER},
+      </if>
+      <if test="projectPercent != null" >
+        #{projectPercent,jdbcType=INTEGER},
+      </if>
+      <if test="educationPercent != null" >
+        #{educationPercent,jdbcType=INTEGER},
+      </if>
+      <if test="samplePercent != null" >
+        #{samplePercent,jdbcType=INTEGER},
+      </if>
+      <if test="avatar != null" >
+        #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleName != null" >
+        #{sampleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleFileName != null" >
+        #{sampleFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleFileUrl != null" >
+        #{sampleFileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleDescription != null" >
+        #{sampleDescription,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.mycloudedu.user.domain.Resume" >
+    update resume
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != 0" >
+        birthday = #{birthday,jdbcType=BIGINT},
+      </if>
+      <if test="education != null" >
+        education = #{education,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        province_id = #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="provinceName != null" >
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="cityName != null" >
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="advantage != null" >
+        advantage = #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="minSalary != null" >
+        min_salary = #{minSalary,jdbcType=INTEGER},
+      </if>
+      <if test="maxSalary != null" >
+        max_salary = #{maxSalary,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=INTEGER},
+      </if>
+      <if test="property != null" >
+        property = #{property,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="basePercent != null" >
+        base_percent = #{basePercent,jdbcType=INTEGER},
+      </if>
+      <if test="advantagePercent != null" >
+        advantage_percent = #{advantagePercent,jdbcType=INTEGER},
+      </if>
+      <if test="expectPercent != null" >
+        expect_percent = #{expectPercent,jdbcType=INTEGER},
+      </if>
+      <if test="internshipPercent != null" >
+        internship_percent = #{internshipPercent,jdbcType=INTEGER},
+      </if>
+      <if test="projectPercent != null" >
+        project_percent = #{projectPercent,jdbcType=INTEGER},
+      </if>
+      <if test="educationPercent != null" >
+        education_percent = #{educationPercent,jdbcType=INTEGER},
+      </if>
+      <if test="samplePercent != null" >
+        sample_percent = #{samplePercent,jdbcType=INTEGER},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleName != null" >
+        sample_name = #{sampleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleFileName != null" >
+        sample_file_name = #{sampleFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleFileUrl != null" >
+        sample_file_url = #{sampleFileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleDescription != null" >
+        sample_description = #{sampleDescription,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.mycloudedu.user.domain.Resume" >
+    update resume
+    set user_id = #{userId,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      birthday = #{birthday,jdbcType=BIGINT},
+      education = #{education,jdbcType=INTEGER},
+      mobile = #{mobile,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      province_id = #{provinceId,jdbcType=INTEGER},
+      province_name = #{provinceName,jdbcType=VARCHAR},
+      city_id = #{cityId,jdbcType=INTEGER},
+      city_name = #{cityName,jdbcType=VARCHAR},
+      advantage = #{advantage,jdbcType=VARCHAR},
+      min_salary = #{minSalary,jdbcType=INTEGER},
+      max_salary = #{maxSalary,jdbcType=INTEGER},
+      time = #{time,jdbcType=INTEGER},
+      property = #{property,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT},
+      base_percent = #{basePercent,jdbcType=INTEGER},
+      advantage_percent = #{advantagePercent,jdbcType=INTEGER},
+      expect_percent = #{expectPercent,jdbcType=INTEGER},
+      internship_percent = #{internshipPercent,jdbcType=INTEGER},
+      project_percent = #{projectPercent,jdbcType=INTEGER},
+      education_percent = #{educationPercent,jdbcType=INTEGER},
+      sample_percent = #{samplePercent,jdbcType=INTEGER},
+      avatar = #{avatar,jdbcType=VARCHAR},
+      sample_name = #{sampleName,jdbcType=VARCHAR},
+      sample_file_name = #{sampleFileName,jdbcType=VARCHAR},
+      sample_file_url = #{sampleFileUrl,jdbcType=VARCHAR},
+      sample_description = #{sampleDescription,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getResumeBase" resultMap="ResumeBaseResultMap">
+    SELECT id,name,sex,avatar,base_percent,birthday,province_id,city_id,education,mobile,email,
+    province_name,city_name,advantage,expect_percent,internship_percent,project_percent,
+    education_percent,sample_percent
+    FROM resume
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <select id="getJobIntention" resultType="java.util.HashMap">
+    SELECT r.property,r.min_salary AS minSalary,r.max_salary AS maxSalary,r.time
+    FROM resume r
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+  </select>
+  <update id="updateByUserIdSelective" parameterType="cn.mycloudedu.user.domain.Resume" >
+    update resume
+    <set >
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null" >
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="birthday != 0" >
+        birthday = #{birthday,jdbcType=BIGINT},
+      </if>
+      <if test="education != null" >
+        education = #{education,jdbcType=INTEGER},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceId != null" >
+        province_id = #{provinceId,jdbcType=INTEGER},
+      </if>
+      <if test="provinceName != null" >
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityId != null" >
+        city_id = #{cityId,jdbcType=INTEGER},
+      </if>
+      <if test="cityName != null" >
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="advantage != null" >
+        advantage = #{advantage,jdbcType=VARCHAR},
+      </if>
+      <if test="minSalary != null" >
+        min_salary = #{minSalary,jdbcType=INTEGER},
+      </if>
+      <if test="maxSalary != null" >
+        max_salary = #{maxSalary,jdbcType=INTEGER},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=INTEGER},
+      </if>
+      <if test="property != null" >
+        property = #{property,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != 0" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != 0" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+      <if test="basePercent != null" >
+        base_percent = #{basePercent,jdbcType=INTEGER},
+      </if>
+      <if test="advantagePercent != null" >
+        advantage_percent = #{advantagePercent,jdbcType=INTEGER},
+      </if>
+      <if test="expectPercent != null" >
+        expect_percent = #{expectPercent,jdbcType=INTEGER},
+      </if>
+      <if test="internshipPercent != null" >
+        internship_percent = #{internshipPercent,jdbcType=INTEGER},
+      </if>
+      <if test="projectPercent != null" >
+        project_percent = #{projectPercent,jdbcType=INTEGER},
+      </if>
+      <if test="educationPercent != null" >
+        education_percent = #{educationPercent,jdbcType=INTEGER},
+      </if>
+      <if test="samplePercent != null" >
+        sample_percent = #{samplePercent,jdbcType=INTEGER},
+      </if>
+      <if test="avatar != null" >
+        avatar = #{avatar,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleName != null" >
+        sample_name = #{sampleName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleFileName != null" >
+        sample_file_name = #{sampleFileName,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleFileUrl != null" >
+        sample_file_url = #{sampleFileUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="sampleDescription != null" >
+        sample_description = #{sampleDescription,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=INTEGER}
+  </update>
+  <select id="getResumeSample" resultType="java.util.HashMap">
+    SELECT sample_name AS sampleName,sample_file_url AS sampleFileUrl,
+    sample_description AS sampleDescription
+    FROM resume
+    WHERE user_id = #{userId,jdbcType=INTEGER}
+  </select>
+</mapper>

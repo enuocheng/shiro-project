@@ -1,0 +1,20 @@
+package cn.mycloudedu.user.biz
+
+import cn.mycloudedu.user.dto.ResumeBaseDTO
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+/**
+  * Created by e诺
+  * on 2017/5/4
+  * Time 上午8:48
+  */
+@Service
+class ResumeBiz {
+//  @Autowired private val resumeMapper: ResumeMapper = null
+
+  def getAvatar(userId: Int): ResumeBaseDTO = {
+//    resumeMapper.getAvatar(userId)
+    null
+  }
+}

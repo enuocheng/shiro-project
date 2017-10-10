@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:memcached.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
+	<bean id="springManager"
+		class="cn.mycloudedu.framework.web.cache.MemcachedCacheManager">
+		<property name="cacheManager" ref="memcachedCacheManager"></property>
+	</bean>
+	<bean id="memcachedCacheManager"
+		class="cn.mycloudedu.framework.web.cache.MemcachedCacheFactory">
+		<property name="defaultProps">
+			<props>
+				<prop key="addrs">121.43.226.85:11211</prop>
+				<prop key="commandFactory">net.rubyeye.xmemcached.command.TextCommandFactory
+				</prop>
+				<prop key="sessionLocator">net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator
+				</prop>
+				<prop key="expiration">1800</prop>
+				<prop key="useDefault">false</prop>
+			</props>
+		</property>
+		<property name="cacheConfigurationList">
+			<list>
+				<bean class="cn.mycloudedu.framework.web.cache.CacheConfiguration">
+					<property name="properties">
+						<props>
+							<prop key="cacheName">shiro-activeSessionCache</prop>
+							<prop key="expiration">0</prop>
+							<prop key="keyPrefix">#SESSION#</prop>
+						</props>
+					</property>
+				</bean>
+				<bean class="cn.mycloudedu.framework.web.cache.CacheConfiguration">
+					<property name="properties">
+						<props>
+							<prop key="cacheName">passwordRetryCache</prop>
+							<prop key="expiration">3600</prop>
+						</props>
+					</property>
+				</bean>
+				<bean class="cn.mycloudedu.framework.web.cache.CacheConfiguration">
+					<property name="properties">
+						<props>
+							<prop key="cacheName">authorizationCache</prop>
+							<prop key="expiration">3600</prop>
+						</props>
+					</property>
+				</bean>
+				<bean class="cn.mycloudedu.framework.web.cache.CacheConfiguration">
+					<property name="properties">
+						<props>
+							<prop key="cacheName">authenticationCache</prop>
+							<prop key="expiration">3600</prop>
+						</props>
+					</property>
+				</bean>
+			</list>
+		</property>
+		<property name="cacheNames" value="shiro-activeSessionCache,passwordRetryCache,authorizationCache,authenticationCache"></property>
+	</bean>
+
+</beans>

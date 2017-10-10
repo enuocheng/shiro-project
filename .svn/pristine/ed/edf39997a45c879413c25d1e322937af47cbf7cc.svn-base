@@ -1,0 +1,18 @@
+package cn.mycloudedu.user.service
+
+import cn.mycloudedu.framework.core.result.{PageOrder, PageResult}
+import cn.mycloudedu.user.dto.RecommendPositionDTO
+import cn.mycloudedu.user.param.SearchPositionParam
+
+/**
+  * Created by e诺
+  * on 2017/4/20
+  * Time 下午2:29
+  */
+trait HomePageService {
+  def hotCompany(pageOrder: PageOrder): PageResult[String]
+
+  def recommendPosition(pageOrder: PageOrder): PageResult[RecommendPositionDTO]
+
+  def searchPosition(param: SearchPositionParam, pageOrder: PageOrder): PageResult[RecommendPositionDTO]
+}

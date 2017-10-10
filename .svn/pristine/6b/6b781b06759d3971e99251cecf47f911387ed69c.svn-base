@@ -1,0 +1,12 @@
+package cn.mycloudedu.user.dto
+
+import scala.beans.BeanProperty
+
+/**
+  * Created by e诺
+  * on 2017/5/4
+  * Time 上午9:11
+  */
+class ResumeBaseDTO extends Serializable{
+  @BeanProperty var avatar: String = ""
+}

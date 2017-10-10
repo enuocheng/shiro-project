@@ -1,0 +1,29 @@
+import cn.mycloudedu.sms.biz.SendCodeBiz;
+import cn.mycloudedu.sms.conf.SmsConfig;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+/**
+ * Created by e诺
+ * on 2017/4/11
+ * Time 下午12:59
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration({"/spring-sms.xml"})
+public class SmsManageBizTest {
+    @Autowired
+    private SendCodeBiz smsManageBiz;
+    @Autowired
+    private SmsConfig smsConfig;
+
+    @Test
+    public void sendValidateCodeTest() throws Exception {
+        String mobile = "18005717166";
+        String templateId=smsConfig.getSmsTemplateCodeModify();
+        String code="888888";
+        smsManageBiz.sendValidateCode(mobile, templateId, code);
+    }
+}

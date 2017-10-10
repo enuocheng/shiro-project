@@ -1,0 +1,199 @@
+package cn.mycloudedu.controller
+
+import java.util.{List => JavaList}
+import javax.validation.Valid
+
+import cn.mycloudedu.framework.core.result.{PageOrder, PageResult, TotalResult}
+import cn.mycloudedu.shiro.ShiroUtil
+import cn.mycloudedu.user.dto._
+import cn.mycloudedu.user.param.{ReplyCommentParam, WriteCommentParam, WriteLogParam}
+import cn.mycloudedu.user.service.PracticeService
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Controller
+import org.springframework.util.Assert
+import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, RequestParam, ResponseBody}
+
+/**
+  * Created by e诺
+  * on 2017/4/17
+  * Time 下午3:45
+  */
+@Controller
+@RequestMapping(Array("practice"))
+class PracticeController extends BaseController {
+  @Autowired private val practiceService: PracticeService = null
+
+  /**
+    * 实习计划列表
+    *
+    * @return
+    */
+  @RequestMapping(value = Array("plan/list"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getPracticePlanList(pageOrder: PageOrder): AnyRef = {
+    val userId = ShiroUtil.getUserId
+    val list: PageResult[PracticePlanDTO] = practiceService.getPracticePlanList(userId, pageOrder)
+    TotalResult.newInstance(list)
+  }
+
+  /**
+    * 编辑日志时获取实习计划列表
+    *
+    * @return
+    */
+  @RequestMapping(value = Array("editlog/plan/list"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getEditLogPlanList(): AnyRef = {
+    val userId = ShiroUtil.getUserId
+    val planList = practiceService.getEditLogPlanList(userId)
+    TotalResult.newInstance(planList)
+  }
+
+  /**
+    * 获取实习计划详情
+    *
+    * @param projectId
+    * @return
+    */
+  @RequestMapping(value = Array("plan/details"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getPracticePlanDetails(@RequestParam("projectId") projectId: Int): AnyRef = {
+    Assert.notNull(projectId, "projectId:不能为空")
+    val userId = ShiroUtil.getUserId
+    val details: PracticePlanDetailsDTO = practiceService.getPracticePlanDetails(userId, projectId)
+    TotalResult.newInstance(details)
+  }
+
+  /**
+    * 写日志
+    *
+    * @param param
+    * @return
+    */
+  @RequestMapping(value = Array("log/write"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def writeLog(@Valid param: WriteLogParam, @RequestParam("create") create: Boolean): AnyRef = {
+    Assert.notNull(create, "create:true:表示create,false:表示edit:不能为空")
+    val userId = ShiroUtil.getUserId
+    if (!create) {
+      Assert.notNull(param.getId, "id:日志Id不能为空")
+    }
+    practiceService.writeLog(userId, param, create)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 获取草稿箱日志列表
+    *
+    * @param pageOrder
+    * @return
+    */
+  @RequestMapping(value = Array("drafts/log/list"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getDraftsLogList(pageOrder: PageOrder): AnyRef = {
+    val userId = ShiroUtil.getUserId
+    val list: PageResult[DraftsLogDTO] = practiceService.getDraftsLogList(userId, pageOrder)
+    TotalResult.newInstance(list)
+  }
+
+  /**
+    * 获取要编辑的日志
+    *
+    * @param dailyId
+    * @return
+    */
+  @RequestMapping(value = Array("log/get"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getLog(@RequestParam("dailyId") dailyId: Int): AnyRef = {
+    Assert.notNull(dailyId, "dailyId:不能为空")
+    val log: EditLogDTO = practiceService.getEditLog(dailyId)
+    TotalResult.newInstance(log)
+  }
+
+  /**
+    * 删除草稿箱日志
+    *
+    * @param dailyId
+    * @return
+    */
+  @RequestMapping(value = Array("log/delete"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def deleteDraftsLog(@RequestParam("dailyId") dailyId: Int): AnyRef = {
+    Assert.notNull(dailyId, "dailyId:不能为空")
+    practiceService.deleteDraftsLog(dailyId)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 我的日志列表
+    *
+    * @param pageOrder
+    * @return
+    */
+  @RequestMapping(value = Array("my/log/list"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getMyLogList(pageOrder: PageOrder): AnyRef = {
+    val userId = ShiroUtil.getUserId
+    val list: PageResult[MyLogDTO] = practiceService.getMyLogList(userId, pageOrder)
+    TotalResult.newInstance(list)
+  }
+
+  /**
+    * 获取日志详情
+    *
+    * @param dailyId
+    * @return
+    */
+  @RequestMapping(value = Array("log/details"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getLogDetails(@RequestParam("dailyId") dailyId: Int): AnyRef = {
+    Assert.notNull(dailyId, "dailyId:不能为空")
+    val userId = ShiroUtil.getUserId
+    val details: MyLogDTO = practiceService.getLogDetails(userId, dailyId)
+    TotalResult.newInstance(details)
+  }
+
+  /**
+    * 获取日志评论
+    *
+    * @param dailyId
+    * @return
+    */
+  @RequestMapping(value = Array("log/comment"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def getLogComment(@RequestParam("dailyId") dailyId: Int): AnyRef = {
+    Assert.notNull(dailyId, "dailyId:不能为空")
+    val comment: JavaList[CommentDTO] = practiceService.getLogComment(dailyId)
+    TotalResult.newInstance(comment)
+  }
+
+  /**
+    * 日志详细 写评论
+    *
+    * @param param
+    * @return
+    */
+  @RequestMapping(value = Array("comment/write"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def writeComment(@Valid param: WriteCommentParam): AnyRef = {
+    practiceService.writeComment(ShiroUtil.getUserId, param)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 日志详情 回复评论
+    *
+    * @param param
+    * @return
+    */
+  @RequestMapping(value = Array("comment/reply"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def replyComment(@Valid param: ReplyCommentParam): AnyRef = {
+    practiceService.replyComment(ShiroUtil.getUserId, param)
+    TotalResult.newInstance(true)
+  }
+
+  /**
+    * 删除评论
+    *
+    * @param commentId
+    * @return
+    */
+  @RequestMapping(value = Array("comment/delete"), method = Array(RequestMethod.POST, RequestMethod.GET), produces = Array("application/json;charset=utf-8"))
+  @ResponseBody def deleteComment(@RequestParam("commentId") commentId: Int): AnyRef = {
+    Assert.notNull(commentId, "commentId:不能为空")
+    var result: Boolean = false
+    if (practiceService.isSelfComment(commentId, ShiroUtil.getUserId)) {
+      result = practiceService.deleteComment(commentId)
+    }
+    TotalResult.newInstance(result)
+  }
+}

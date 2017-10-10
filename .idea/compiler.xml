@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <resourceExtensions />
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Annotation profile for jianqiao-app" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="jianqiao-app" />
+      </profile>
+      <profile default="false" name="Annotation profile for mycloudedu-common-web" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="mycloudedu-common-web" />
+      </profile>
+      <profile default="false" name="Annotation profile for mycloudedu-facade-sms" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="mycloudedu-facade-sms" />
+      </profile>
+      <profile default="false" name="Annotation profile for mycloudedu-common-core" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="mycloudedu-common-core" />
+      </profile>
+      <profile default="false" name="Annotation profile for mycloudedu-service-user" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="mycloudedu-service-user" />
+      </profile>
+      <profile default="false" name="Annotation profile for mycloudedu-facade-user" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="mycloudedu-facade-user" />
+      </profile>
+      <profile default="false" name="Annotation profile for mycloudedu-service-sms" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="mycloudedu-service-sms" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="jianqiao-app" target="1.7" />
+      <module name="mycloudedu-common-core" target="1.7" />
+      <module name="mycloudedu-common-web" target="1.7" />
+      <module name="mycloudedu-facade-sms" target="1.7" />
+      <module name="mycloudedu-facade-user" target="1.7" />
+      <module name="mycloudedu-parent" target="1.5" />
+      <module name="mycloudedu-service-sms" target="1.7" />
+      <module name="mycloudedu-service-user" target="1.7" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

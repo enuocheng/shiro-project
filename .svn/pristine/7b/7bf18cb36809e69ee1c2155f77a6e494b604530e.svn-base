@@ -1,0 +1,32 @@
+package cn.mycloudedu.user.dao
+
+import cn.mycloudedu.user.domain.Area
+import org.apache.ibatis.annotations.Param
+import org.springframework.stereotype.Repository
+import java.util.{List => JavaList, Map => JavaMap}
+
+/**
+  * Created by e诺
+  * on 2017/4/13
+  * Time 下午5:10
+  */
+@Repository
+trait AreaMapper {
+  def deleteByPrimaryKey(id: Integer): Int
+
+  def insert(record: Area): Int
+
+  def insertSelective(record: Area): Int
+
+  def selectByPrimaryKey(id: Integer): Area
+
+  def updateByPrimaryKeySelective(record: Area): Int
+
+  def updateByPrimaryKey(record: Area): Int
+
+  def getArea(parentId: Int): JavaList[JavaMap[Int, String]]
+
+  def getAreaByLevel2(@Param("level1Id") level1Id: Int, @Param("level2Id") level2Id: Int): JavaMap[Int, String]
+
+  def getAreaByLevel3(@Param("level1Id") level1Id: Int, @Param("level2Id") level2Id: Int,@Param("level3Id") level3Id: Int): JavaMap[Int, String]
+}

@@ -1,0 +1,14 @@
+package cn.mycloudedu.user.param
+
+import scala.beans.BeanProperty
+
+/**
+  * 求职意向 参数字段
+  * Created by e诺
+  * on 2017/5/5
+  * Time 下午4:30
+  */
+class JobIntentionParam extends Serializable {
+  @BeanProperty var property: Integer = null
+  @BeanProperty var expectPercent: Integer = null
+}
